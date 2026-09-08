@@ -2,23 +2,23 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
 :root{
-  --bg:#111827;
-  --panel-a:#1f2937;
-  --panel-b:#111827;
-  --border:#374151;
-  --border-soft:#283142;
-  --header-bg:#000000;
-  --nav-bg:#1f2937;
-  --nv:#76b900;
-  --nv-dark:#5a8f00;
-  --ok:#22c55e;
-  --ok-bg:rgba(34,197,94,.15);
-  --ok-border:rgba(34,197,94,.35);
-  --amber:#f59e0b;
-  --red:#ef4444;
-  --text:#f3f4f6;
-  --text-dim:#9ca3af;
-  --text-faint:#6b7280;
+  --bg:#0D1117;
+  --panel-a:#21262D;
+  --panel-b:#0D1117;
+  --border:#30363D;
+  --border-soft:#262c36;
+  --header-bg:#161B22;
+  --nav-bg:#161B22;
+  --nv:#2F81F7;
+  --nv-dark:#1f6feb;
+  --ok:#3FB950;
+  --ok-bg:rgba(63,185,80,.15);
+  --ok-border:rgba(63,185,80,.35);
+  --amber:#D29922;
+  --red:#F85149;
+  --text:#F0F6FC;
+  --text-dim:#8B949E;
+  --text-faint:#6e7681;
   font-family:'JetBrains Mono',Consolas,Monaco,'Courier New',monospace;
 }
 *{box-sizing:border-box;}
@@ -27,14 +27,18 @@ body{
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   padding:24px;
   font-size:14px;
 }
+.page{
+  max-width:1180px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
 .shell{
-  width:min(1180px, 100%);
+  width:100%;
   border:1px solid var(--border);
   border-radius:10px;
   overflow:hidden;
@@ -57,7 +61,7 @@ body{
 .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
 .logo{
   width:38px; height:38px; flex:none; border-radius:8px;
-  background:var(--nv); color:#000; font-weight:700; font-size:16px;
+  background:var(--nv); color:#fff; font-weight:700; font-size:16px;
   display:flex; align-items:center; justify-content:center;
 }
 .brand .title{ font-weight:700; font-size:16px; letter-spacing:.02em; color:var(--text); }
@@ -138,6 +142,29 @@ body{
 .rowline:first-of-type{ border-top:none; }
 .rowline span:first-child{ white-space:nowrap; }
 
+.cool-icon-wrap{ display:flex; justify-content:center; padding:4px 0 10px; }
+.fan-icon{ animation:spin linear infinite; transform-origin:50% 50%; }
+@keyframes spin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+.water-wave{ animation:waveScroll linear infinite; }
+@keyframes waveScroll{ from{ transform:translateX(0); } to{ transform:translateX(-14px); } }
+@media (prefers-reduced-motion: reduce){ .fan-icon, .water-wave{ animation:none; } }
+
+.sparkline-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+.sparkline-label{ font-size:9px; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint); white-space:nowrap; }
+.sparkline{ flex:none; }
+
+.logcard{ max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:9px; }
+.logrow{ display:flex; flex-direction:column; gap:2px; padding-bottom:9px; border-bottom:1px solid var(--border-soft); }
+.logrow:last-child{ border-bottom:none; padding-bottom:0; }
+.logmeta{ display:flex; align-items:center; gap:6px; font-size:10px; }
+.logdot{ flex:none; width:6px; height:6px; border-radius:50%; background:var(--text-faint); }
+.logdot.warn{ background:var(--amber); }
+.logdot.crit{ background:var(--red); }
+.logtime{ flex:none; color:var(--text-faint); font-variant-numeric:tabular-nums; }
+.loghost{ flex:none; color:var(--nv); font-weight:700; }
+.logmsg{ font-size:11px; line-height:1.4; color:var(--text-dim); padding-left:12px; }
+.logmsg.dim{ color:var(--text-faint); font-style:italic; padding-left:0; }
+
 .gpugrid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .gpu-card{ border:1px solid var(--border-soft); border-radius:6px; padding:8px; background:rgba(255,255,255,.015); }
 .gpu-card-top{ display:flex; align-items:center; justify-content:space-between; font-size:11px; font-weight:700; margin-bottom:4px; }
@@ -197,7 +224,7 @@ body{
 
 .row{ display:flex; gap:8px; }
 .prompt{ flex:none; color:var(--nv); white-space:pre; font-weight:700; }
-.prompt .path{ color:#a9c98a; font-weight:400; }
+.prompt .path{ color:#58a6ff; font-weight:400; }
 .inputWrap{ flex:1; min-width:0; }
 .inputWrap input{
   width:100%;
@@ -222,19 +249,68 @@ body{
 }
 .footbar b{ color:var(--text-dim); font-weight:700; }
 .footbar .disclaimer{ text-align:right; max-width:640px; }
+
+/* ---- info sections (about / contribute / disclaimer / security) ---- */
+.infopage{ display:flex; flex-direction:column; gap:16px; }
+.info-card{
+  background:linear-gradient(160deg, var(--panel-a), var(--panel-b));
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:22px 26px;
+}
+.info-card h2{
+  margin:0 0 12px;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--nv);
+}
+.info-card p{
+  margin:0 0 12px;
+  font-size:12.5px;
+  line-height:1.65;
+  color:var(--text-dim);
+  max-width:78ch;
+}
+.info-card p:last-child{ margin-bottom:0; }
+.info-card a{ color:var(--nv); text-decoration:none; border-bottom:1px solid var(--nv-dark); }
+.info-card a:hover{ color:#58a6ff; }
+.info-card code{ background:rgba(255,255,255,.06); border:1px solid var(--border-soft); border-radius:3px; padding:1px 5px; color:var(--text); font-size:11.5px; }
+
+.info-rows{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; font-size:12.5px; }
+.info-rows .r{ display:flex; gap:8px; }
+.info-rows .r span:first-child{ color:var(--text-faint); min-width:150px; flex:none; }
+.info-rows .r span:last-child, .info-rows .r a{ color:var(--text); }
+
+.check-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.check-list li{
+  display:flex; gap:10px; align-items:flex-start;
+  font-size:12.5px; line-height:1.55; color:var(--text-dim);
+}
+.check-list li::before{
+  content:"✓"; flex:none; color:var(--ok); font-weight:700;
+  width:16px; height:16px; border-radius:50%;
+  background:var(--ok-bg); border:1px solid var(--ok-border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; margin-top:1px;
+}
+.check-list b{ color:var(--text); }
+
 </style>
 
+<div class="page">
 <div class="shell">
   <header class="topbar">
     <div class="brand">
       <div class="logo">⬡</div>
       <div>
         <div class="title">DGX CONSOLE</div>
-        <div class="subtitle">Simulated NVIDIA DGX / BlueField fleet &mdash; no real hardware attached</div>
+        <div class="subtitle">Educational Simulator &middot; Independent project &mdash; not affiliated with or endorsed by NVIDIA Corporation</div>
       </div>
     </div>
     <div class="topbar-right">
-      <div class="pill" id="clusterPill"><span class="dot"></span> 4/4 NODES ONLINE</div>
+      <div class="pill" id="clusterPill"><span class="dot"></span> 5/5 NODES ONLINE</div>
       <button class="iconbtn" id="resetBtn" title="Reset this session">&#8635;</button>
     </div>
   </header>
@@ -246,8 +322,8 @@ body{
       <div class="card">
         <div class="card-head">Cluster Health <span class="pill xs">OK</span></div>
         <div class="statgrid">
-          <div class="stat"><div class="num">4/4</div><div class="label">NODES ONLINE</div></div>
-          <div class="stat"><div class="num">24/24</div><div class="label">GPUS HEALTHY</div></div>
+          <div class="stat"><div class="num">5/5</div><div class="label">NODES ONLINE</div></div>
+          <div class="stat"><div class="num">40/40</div><div class="label">GPUS HEALTHY</div></div>
         </div>
         <div class="rowline"><span>InfiniBand Fabric</span><span class="pill xs">&check; Active</span></div>
         <div class="rowline"><span>NVSwitch Fabric</span><span class="pill xs">&check; Active</span></div>
@@ -259,8 +335,18 @@ body{
       </div>
 
       <div class="card">
+        <div class="card-head">Cooling Status <span class="dim" id="coolingHostLabel"></span></div>
+        <div id="coolingBox"></div>
+      </div>
+
+      <div class="card">
         <div class="card-head">Node Details</div>
         <div class="kv" id="nodeDetails"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Event Log <span class="dim">fleet-wide</span></div>
+        <div class="logcard" id="eventLog"></div>
       </div>
     </aside>
 
@@ -280,45 +366,97 @@ body{
   </footer>
 </div>
 
+<section class="infopage">
+  <div class="info-card">
+    <h2>About This Project</h2>
+    <p>DGX Console is a browser-based simulator of an NVIDIA DGX data center fleet &mdash; H100, H200, B200, GB200, and VR200 nodes &mdash; built for exploring GPU cluster monitoring and command-line tooling (<code>nvidia-smi</code>, <code>dcgmi</code>, <code>ipmitool</code>, NVLink, and ConnectX/InfiniBand utilities) in a safe, consequence-free environment. Every GPU reading, sensor value, and command output is fabricated entirely in your browser &mdash; nothing here is connected to real hardware.</p>
+  </div>
+
+  <div class="info-card">
+    <h2>Contribute &amp; Feedback</h2>
+    <p>This project is open source. Contributions, bug reports, and feature requests are welcome.</p>
+    <div class="info-rows">
+      <div class="r"><span>GitHub Repository</span><a href="https://github.com/nullrack/dgx-console" target="_blank" rel="noopener">DGX Console</a></div>
+      <div class="r"><span>Project Lead</span><span>Dwayne Clarke</span></div>
+    </div>
+    <p>Found a bug or have feedback? <a href="https://github.com/nullrack/dgx-console/issues" target="_blank" rel="noopener">Open an issue on GitHub</a>.</p>
+  </div>
+
+  <div class="info-card">
+    <h2>Legal Disclaimer</h2>
+    <p>DGX Console is an independent, community-built educational and simulation project. It is not developed, sponsored, endorsed, certified, or affiliated with NVIDIA Corporation.</p>
+    <p>NVIDIA, DGX, CUDA, NVLink, NVSwitch, DCGM, NVSM, and other NVIDIA product names, technologies, and trademarks referenced within this project are the property of NVIDIA Corporation and/or its affiliates. Other product names and trademarks referenced within the project are the property of their respective owners. Slurm is a trademark of SchedMD LLC.</p>
+    <p>This project may simulate NVIDIA DGX systems, command-line utilities, hardware configurations, system information, diagnostic output, and administrative workflows for educational and training purposes. Simulated outputs, specifications, configurations, and diagnostic data are approximations and may differ from actual NVIDIA hardware, software, firmware, drivers, or command-line tools.</p>
+    <p>This project is not intended to replace official product documentation, technical support, operational procedures, or professional guidance. Users working with real systems should consult the applicable manufacturer&rsquo;s official documentation before performing configuration, maintenance, troubleshooting, or other administrative operations.</p>
+    <p>This software is provided &ldquo;as is,&rdquo; without warranty of any kind, express or implied, including, but not limited to, warranties of merchantability, fitness for a particular purpose, and noninfringement. To the maximum extent permitted by applicable law, the authors and contributors shall not be liable for any claim, damages, loss, or other liability arising from or related to the use of this software.</p>
+  </div>
+
+  <div class="info-card">
+    <h2>Security &amp; Privacy</h2>
+    <ul class="check-list">
+      <li><span><b>No accounts</b> &mdash; there's nothing to sign up for or log into.</span></li>
+      <li><span><b>100% client-side</b> &mdash; every command, GPU reading, and diagnostic output is generated by JavaScript running in your browser; nothing is sent to a server.</span></li>
+      <li><span><b>No data collection</b> &mdash; no analytics, no tracking, no cookies, no data of any kind is collected.</span></li>
+      <li><span><b>No backend</b> &mdash; this is a single static page; there is no database, authentication service, or server-side component of any kind.</span></li>
+    </ul>
+  </div>
+</section>
+</div>
+
 <script>
 (function(){
 
 // ---------- architecture profiles ----------
 const ARCHES = {
   h100: {
-    label:"DGX H100", tag:"H100", kind:"gpu",
+    label:"DGX H100", tag:"H100",
     gpuModel:"H100 80GB HBM3", gpuMemMiB:81559, powerCapW:700,
     cpu:"2× Intel Xeon Platinum 8480C", cores:112, coresLabel:"112 (56×2)",
     driver:"535.129.03", cuda:"12.2",
     nvlinkGen:"4th Gen", nvlinkBW:"900 GB/s", nvlinkPerLinkGBs:"26.562",
     os:"DGX OS 6 (Ubuntu 22.04 LTS base)",
     hcaCount:8, hcaSpeed:"400Gb/s ConnectX-7",
+    cooling:"air",
   },
   h200: {
-    label:"DGX H200", tag:"H200", kind:"gpu",
+    label:"DGX H200", tag:"H200",
     gpuModel:"H200 141GB HBM3e", gpuMemMiB:144381, powerCapW:700,
     cpu:"2× Intel Xeon Platinum 8480C", cores:112, coresLabel:"112 (56×2)",
     driver:"550.90.07", cuda:"12.4",
     nvlinkGen:"4th Gen", nvlinkBW:"900 GB/s", nvlinkPerLinkGBs:"26.562",
     os:"DGX OS 6 (Ubuntu 22.04 LTS base)",
     hcaCount:8, hcaSpeed:"400Gb/s ConnectX-7",
+    cooling:"air",
   },
   b200: {
-    label:"DGX B200", tag:"B200", kind:"gpu",
+    label:"DGX B200", tag:"B200",
     gpuModel:"B200 180GB HBM3e", gpuMemMiB:184320, powerCapW:1000,
     cpu:"2× Intel Xeon Platinum 8570", cores:112, coresLabel:"112 (56×2)",
     driver:"560.35.03", cuda:"12.6",
     nvlinkGen:"5th Gen", nvlinkBW:"1.8 TB/s", nvlinkPerLinkGBs:"53.125",
     os:"DGX OS 7 (Ubuntu 22.04 LTS base)",
     hcaCount:8, hcaSpeed:"400Gb/s ConnectX-7",
+    cooling:"liquid", coolant:"PG25 (25% propylene glycol)",
   },
-  bf3: {
-    label:"BlueField-3 Controller", tag:"BF3", kind:"dpu",
-    cpu:"16× Arm Cortex-A78AE", cores:16, coresLabel:"16 (16×1)",
-    memGB:32, memType:"LPDDR5",
-    doca:"24.10", cuda:"n/a",
-    os:"BlueField OS (Ubuntu 22.04 Arm base)",
-    hcaCount:2, hcaSpeed:"400GbE/NDR200 ConnectX-7",
+  gb200: {
+    label:"DGX GB200", tag:"GB200",
+    gpuModel:"GB200 Grace Blackwell 192GB HBM3e", gpuMemMiB:196608, powerCapW:1200,
+    cpu:"2× NVIDIA Grace (72-core Arm Neoverse V2)", cores:144, coresLabel:"144 (72×2)",
+    driver:"565.90.01", cuda:"12.6",
+    nvlinkGen:"5th Gen", nvlinkBW:"1.8 TB/s", nvlinkPerLinkGBs:"53.125",
+    os:"DGX OS 7 (Ubuntu 22.04 LTS base)",
+    hcaCount:8, hcaSpeed:"800Gb/s ConnectX-8",
+    cooling:"liquid", coolant:"PG25 (25% propylene glycol)",
+  },
+  vr200: {
+    label:"DGX VR200", tag:"VR200",
+    gpuModel:"Rubin 288GB HBM4", gpuMemMiB:294912, powerCapW:1800,
+    cpu:"2× NVIDIA Vera (88-core Arm)", cores:176, coresLabel:"176 (88×2)",
+    driver:"580.10.00", cuda:"13.0",
+    nvlinkGen:"6th Gen", nvlinkBW:"3.6 TB/s", nvlinkPerLinkGBs:"106.25",
+    os:"DGX OS 8 (Ubuntu 24.04 LTS base)",
+    hcaCount:8, hcaSpeed:"800Gb/s ConnectX-9",
+    cooling:"liquid", coolant:"PG25 (25% propylene glycol)",
   },
 };
 
@@ -326,12 +464,13 @@ const NODES = [
   {host:"dgx-h100-01", archKey:"h100"},
   {host:"dgx-h200-01", archKey:"h200"},
   {host:"dgx-b200-01", archKey:"b200"},
-  {host:"bf3-ctrl-01",  archKey:"bf3"},
+  {host:"dgx-gb200-01", archKey:"gb200"},
+  {host:"dgx-vr200-01", archKey:"vr200"},
 ];
 
 const COMMANDS = ["nvidia-smi","dcgmi","ipmitool","nvcc","top","df","free","uptime","hostname",
   "whoami","lscpu","clear","history","help","info","nvlink","mlxfwmanager","mst","ibdev2netdev",
-  "ovs-vsctl","exit","cat","ls"];
+  "nvsm","exit","cat","ls"];
 
 function pad(s,w,left){ s=String(s); if(s.length>=w) return s.slice(0,w); const p=' '.repeat(w-s.length); return left?p+s:s+p; }
 function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
@@ -340,18 +479,29 @@ function pick(arr){ return arr[rnd(0,arr.length-1)]; }
 function hx(){ return Math.floor(Math.random()*256).toString(16).padStart(2,'0'); }
 
 // ---- per-node session state ----
+function tempZone(t){ return t>=85?"crit":t>=75?"warn":"ok"; }
+function levelZone(l){ return l<80?"crit":l<90?"warn":"ok"; }
+
 const sessions = {};
 NODES.forEach(n=>{
   const a = ARCHES[n.archKey];
+  const gpus = Array.from({length:8},(_,g)=>({
+    id:g, util: rnd(4,30), mem: rnd(600, Math.round(a.gpuMemMiB*0.06)),
+    temp: rnd(34,46), pwr: rnd(Math.round(a.powerCapW*0.11), Math.round(a.powerCapW*0.2)), fan: rnd(28,42)
+  }));
+  const coolant = a.cooling==="liquid" ? {
+    level: rnd(94,100), flow: rnd(18,34), supplyTemp: rnd(24,30), returnTemp: rnd(32,42)
+  } : null;
+  const avgUtil0 = Math.round(gpus.reduce((acc,g)=>acc+g.util,0)/8);
+  const avgTemp0 = Math.round(gpus.reduce((acc,g)=>acc+g.temp,0)/8);
   sessions[n.host] = {
     host:n.host, arch:a,
     cwd:"~",
     hist:[], histPos:0,
-    gpus: a.kind==="gpu" ? Array.from({length:8},(_,g)=>({
-      id:g, util: rnd(4,30), mem: rnd(600, Math.round(a.gpuMemMiB*0.06)),
-      temp: rnd(34,46), pwr: rnd(Math.round(a.powerCapW*0.11), Math.round(a.powerCapW*0.2)), fan: rnd(28,42)
-    })) : [],
-    dpu: a.kind==="dpu" ? { armUtil: rnd(6,26), port0: rnd(55,90), port1: rnd(55,90), temp: rnd(36,50) } : null,
+    gpus, coolant,
+    history: [{util:avgUtil0, temp:avgTemp0}],
+    prevTempZone: tempZone(Math.max(...gpus.map(g=>g.temp))),
+    prevLevelZone: coolant ? levelZone(coolant.level) : null,
     lines: []
   };
 });
@@ -362,24 +512,11 @@ const tabsEl = document.getElementById('nodeTabs');
 
 function bootBanner(host){
   const a = sessions[host].arch;
-  if(a.kind === "gpu"){
-    return [
-      ["nv bold", `  ${a.label.toUpperCase()}  ·  NVIDIA ${a.gpuModel} ×8`],
-      ["dim",""],
-      ["dim", `  Driver Version: ${a.driver}      CUDA Version: ${a.cuda}      NVLink: ${a.nvlinkGen} (${a.nvlinkBW})`],
-      ["dim", `  Kernel 5.15.0-1051-nvidia       glibc 2.35              NVSwitch: 4× (Fabric OK)`],
-      ["faint","  Last login: " + new Date(Date.now()-86400000*rnd(1,4)).toDateString() + " from 10.66." + rnd(1,254) + "." + rnd(1,254)],
-      ["",""],
-      ["bold","Need help?"],
-      ["","    help              "],
-      ["","    help <command>    "],
-    ];
-  }
   return [
-    ["nv bold", `  ${a.label.toUpperCase()}  ·  16× ARM CORTEX-A78AE  ·  DOCA ${a.doca}`],
+    ["nv bold", `  ${a.label.toUpperCase()}  ·  NVIDIA ${a.gpuModel} ×8`],
     ["dim",""],
-    ["dim", `  DOCA Version: ${a.doca}          BSP: 4.7.0               Mode: DPU (separated host)`],
-    ["dim", `  Kernel 5.15.0-bluefield         Ubuntu 22.04 (Arm)        Ports: 2× ${a.hcaSpeed}`],
+    ["dim", `  Driver Version: ${a.driver}      CUDA Version: ${a.cuda}      NVLink: ${a.nvlinkGen} (${a.nvlinkBW})`],
+    ["dim", `  Kernel 5.15.0-1051-nvidia       glibc 2.35              NVSwitch: 4× (Fabric OK)`],
     ["faint","  Last login: " + new Date(Date.now()-86400000*rnd(1,4)).toDateString() + " from 10.66." + rnd(1,254) + "." + rnd(1,254)],
     ["",""],
     ["bold","Need help?"],
@@ -403,11 +540,11 @@ function tickGpu(gpu, arch){
   gpu.pwr  = Math.max(Math.round(cap*0.09), Math.min(cap, Math.round(cap*0.17 + gpu.util*(cap*0.0066) + rnd(-15,15))));
   gpu.fan  = Math.max(25, Math.min(100, Math.round(28 + gpu.util*0.5)));
 }
-function tickDpu(d){
-  d.armUtil = Math.max(2, Math.min(80, d.armUtil + rnd(-5,6)));
-  d.port0 = Math.max(10, Math.min(99, d.port0 + rnd(-8,8)));
-  d.port1 = Math.max(10, Math.min(99, d.port1 + rnd(-8,8)));
-  d.temp = Math.max(32, Math.min(78, d.temp + rnd(-2,3)));
+function tickCoolant(c){
+  c.level = Math.max(75, Math.min(100, c.level + (Math.random()<0.85 ? 0 : rnd(-1,1))));
+  c.flow = Math.max(12, Math.min(40, c.flow + rnd(-2,2)));
+  c.supplyTemp = Math.max(22, Math.min(32, c.supplyTemp + rnd(-1,1)));
+  c.returnTemp = Math.max(c.supplyTemp+5, Math.min(46, c.returnTemp + rnd(-1,1)));
 }
 
 // ---------- command implementations ----------
@@ -418,15 +555,8 @@ function nvidiaSmiHeader(){
   return `${days[now.getDay()]} ${mon[now.getMonth()]} ${pad(now.getDate(),2,true)} ${pad(now.getHours(),2,true)}:${pad(now.getMinutes(),2,true)}:${pad(now.getSeconds(),2,true)} ${now.getFullYear()}`;
 }
 
-function noGpuMessage(host){
-  print(host,"red","NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver.");
-  print(host,"red","Make sure that the latest NVIDIA driver is installed and running.");
-  print(host,"faint","(this platform has no discrete GPU attached — see 'info' for DPU details)");
-}
-
 function cmdNvidiaSmi(host, args){
   const s = sessions[host]; const a = s.arch;
-  if(a.kind !== "gpu"){ noGpuMessage(host); return; }
   s.gpus.forEach(g=>tickGpu(g,a));
 
   if(args.includes("-L")){
@@ -512,10 +642,6 @@ function printTopo(host){
 
 function cmdDcgmi(host,args){
   const s = sessions[host]; const a = s.arch;
-  if(a.kind !== "gpu"){
-    printRow(host,"Error: unable to find any supported devices — DCGM requires an NVIDIA GPU.");
-    return;
-  }
   if(args[0]==="discovery"){
     printRow(host,"8 GPUs found.");
     s.gpus.forEach(g=>printRow(host,`GPU ${g.id}: NVIDIA ${a.gpuModel} (UUID: GPU-${uuidLike(g.id,host)})`));
@@ -534,6 +660,7 @@ function cmdDcgmi(host,args){
 }
 
 function cmdIpmitool(host){
+  const s = sessions[host]; const a = s.arch;
   print(host,"dim","Sensor ID              | Value      | Unit      | Status");
   print(host,"dim","------------------------|------------|-----------|--------");
   const sensors = [
@@ -543,27 +670,33 @@ function cmdIpmitool(host){
     ["CPU1 Temp","degrees C"], ["CPU2 Temp","degrees C"],
     ["12V","Volts"],
   ];
-  sensors.forEach(s=>{
+  sensors.forEach(row=>{
     let val;
-    if(s[1]==="degrees C") val = rnd(24,52);
-    else if(s[1]==="Watts") val = rnd(310,890);
-    else if(s[1]==="RPM") val = rnd(4200,9800);
+    if(row[1]==="degrees C") val = rnd(24,52);
+    else if(row[1]==="Watts") val = rnd(310,890);
+    else if(row[1]==="RPM") val = rnd(4200,9800);
     else val = rndf(11.8,12.2,2);
-    printRow(host, `${pad(s[0],23)} | ${pad(val,10,true)} | ${pad(s[1],9)} | ok`);
+    printRow(host, `${pad(row[0],23)} | ${pad(val,10,true)} | ${pad(row[1],9)} | ok`);
   });
+  if(a.cooling==="liquid"){
+    tickCoolant(s.coolant);
+    const c = s.coolant;
+    const lvlStatus = c.level>=90?"ok":c.level>=80?"warn":"crit";
+    printRow(host, `${pad("Coolant Supply Temp",23)} | ${pad(c.supplyTemp,10,true)} | ${pad("degrees C",9)} | ok`);
+    printRow(host, `${pad("Coolant Return Temp",23)} | ${pad(c.returnTemp,10,true)} | ${pad("degrees C",9)} | ok`);
+    printRow(host, `${pad("Coolant Flow Rate",23)} | ${pad(c.flow,10,true)} | ${pad("L/min",9)} | ok`);
+    printRow(host, `${pad("Coolant Level",23)} | ${pad(c.level+"%",10,true)} | ${pad("percent",9)} | ${lvlStatus}`);
+  }
 }
 
 function cmdTop(host){
-  const a = sessions[host].arch;
   print(host,"dim",`top - ${new Date().toTimeString().slice(0,8)} up ${rnd(4,190)} days,  ${rnd(1,4)} users,  load average: ${rndf(0.8,6.2,2)}, ${rndf(0.8,6.2,2)}, ${rndf(0.8,6.2,2)}`);
   print(host,"dim",`Tasks: ${rnd(680,900)} total,   ${rnd(1,3)} running, ${rnd(650,880)} sleeping`);
   print(host,"dim",`%Cpu(s): ${rndf(4,38,1)} us,  ${rndf(0.5,3,1)} sy,  0.0 ni, ${rndf(60,95,1)} id`);
   print(host,"dim",`MiB Mem : 2064245 total, ${rnd(180000,900000)} free, ${rnd(120000,600000)} used, ${rnd(400000,900000)} buff/cache`);
   print(host,"","");
   print(host,"dim","  PID USER      PR  NI    RES  %CPU  %MEM  TIME+  COMMAND");
-  const procs = a.kind==="dpu"
-    ? ["doca_flow_ctl","ovs-vswitchd","ovsdb-server","mlx_fw_updater","bfhcadiag","rshim_net_backend","containerd-shim","sshd: root"]
-    : ["python3.10 train_llm_ft.py","nv-hostengine","dcgmi","containerd-shim","triton_server","pt_data_worker","sshd: root","kubelet"];
+  const procs = ["python3.10 train_llm_ft.py","nv-hostengine","dcgmi","containerd-shim","triton_server","pt_data_worker","sshd: root","kubelet"];
   procs.forEach(p=>{
     printRow(host, ` ${pad(rnd(1000,64000),6,true)} root      20   0  ${pad(rnd(1,60)+"g",6,true)} ${pad(rndf(0.2,42,1),5,true)} ${pad(rndf(0.1,9,1),5,true)} ${pad(rnd(0,900)+":"+pad(rnd(0,59),2,true),7,true)}  ${p}`);
   });
@@ -588,16 +721,7 @@ function cmdFree(host){
 
 function cmdLscpu(host){
   const a = sessions[host].arch;
-  if(a.kind === "dpu"){
-    printRow(host,"Architecture:            aarch64");
-    printRow(host,"CPU(s):                  16");
-    printRow(host,"Model name:              ARM Cortex-A78AE");
-    printRow(host,"Thread(s) per core:      1");
-    printRow(host,"NUMA node(s):            1");
-    printRow(host,"L3 cache:                16 MiB");
-    return;
-  }
-  printRow(host,"Architecture:            x86_64");
+  printRow(host,"Architecture:            "+(a.cpu.includes("Arm")||a.cpu.includes("NVIDIA")?"aarch64":"x86_64"));
   printRow(host,"CPU(s):                  "+a.cores);
   printRow(host,"Model name:              "+a.cpu.replace("×","x")+"  (dual socket)");
   printRow(host,"Thread(s) per core:      2");
@@ -607,7 +731,6 @@ function cmdLscpu(host){
 
 function cmdNvlink(host,args){
   const a = sessions[host].arch;
-  if(a.kind !== "gpu"){ printRow(host,"nvlink: no NVLink-capable devices found on this platform."); return; }
   if(args[0]==="--status"||!args.length){
     for(let g=0; g<8; g++){
       printRow(host, `GPU ${g}: NVIDIA ${a.gpuModel}`);
@@ -630,7 +753,7 @@ function cmdMlxfwmanager(host){
     printRow(host,"----------");
     printRow(host,"");
     printRow(host,"  Device Type:      ConnectX-7");
-    printRow(host,"  Part Number:      "+ (a.kind==="dpu" ? "900-9D3B6-00EA-EA0" : "MCX755106AS-HEAT"));
+    printRow(host,"  Part Number:      MCX755106AS-HEAT");
     printRow(host,"  Description:      "+a.hcaSpeed+" adapter");
     printRow(host,"  PSID:             MT_000000"+rnd(1000,9999));
     printRow(host,"  PCI Device Name:  0000:"+pad(rnd(17,220),2,true)+":00.0");
@@ -665,54 +788,54 @@ function cmdIbdev2netdev(host){
   }
 }
 
-function cmdOvsVsctl(host){
-  const a = sessions[host].arch;
-  if(a.kind !== "dpu"){
-    printRow(host,"ovs-vsctl: no bridges configured on this host (no OVS hardware offload enabled).");
-    return;
-  }
-  printRow(host,"a1b2c3d4-e5f6-4a9c-91b0-dpubridge001");
-  printRow(host,'    Bridge br-sfc');
-  printRow(host,"        Port p0");
-  printRow(host,"            Interface p0");
-  printRow(host,"        Port pf0hpf");
-  printRow(host,"            Interface pf0hpf");
-  printRow(host,"        Port ovs-netdev");
-  printRow(host,"            Interface ovs-netdev");
-  printRow(host,'    ovs_version: "3.1.0"');
-}
-
 function cmdInfo(host){
   const s=sessions[host]; const a = s.arch;
-  if(a.kind === "gpu"){
-    const avgUtil = Math.round(s.gpus.reduce((acc,g)=>acc+g.util,0)/8);
-    print(host,"nv bold","  "+a.label.toUpperCase()+" SYSTEM INFO");
-    printRow(host,"  ─────────────────────────────────────────");
-    printRow(host,"  Host        "+host+".cluster.local");
-    printRow(host,"  Chassis     NVIDIA "+a.label);
-    printRow(host,"  GPUs        8 × "+a.gpuModel);
-    printRow(host,"  CPU         "+a.cpu+" (56C/112T)");
-    printRow(host,"  Memory      2048 GiB DDR5");
-    printRow(host,"  Storage     30.72 TB NVMe (U.2)");
-    printRow(host,"  Network     "+a.hcaCount+"× "+a.hcaSpeed+", 2× 200G Ethernet (mgmt)");
-    printRow(host,"  NVLink      "+a.nvlinkGen+" · "+a.nvlinkBW+" per GPU");
-    printRow(host,"  OS          "+a.os);
-    printRow(host,"  Uptime      "+rnd(4,190)+" days");
-    printRow(host,"  Avg GPU Ut. "+avgUtil+"%");
-    return;
-  }
-  print(host,"nv bold","  BLUEFIELD-3 DPU INFO");
+  const avgUtil = Math.round(s.gpus.reduce((acc,g)=>acc+g.util,0)/8);
+  print(host,"nv bold","  "+a.label.toUpperCase()+" SYSTEM INFO");
   printRow(host,"  ─────────────────────────────────────────");
   printRow(host,"  Host        "+host+".cluster.local");
-  printRow(host,"  Chassis     NVIDIA "+a.label+" (Controller Card)");
-  printRow(host,"  Arm Cores   "+a.cpu+" @ 2.75GHz");
-  printRow(host,"  DPU Memory  "+a.memGB+" GiB "+a.memType);
-  printRow(host,"  Network     "+a.hcaCount+"× "+a.hcaSpeed);
-  printRow(host,"  PCIe Host   Gen5 x16 (dual-host capable)");
-  printRow(host,"  DOCA        "+a.doca+" (DOCA SDK + DPU runtime)");
+  printRow(host,"  Chassis     NVIDIA "+a.label);
+  printRow(host,"  GPUs        8 × "+a.gpuModel);
+  printRow(host,"  CPU         "+a.cpu+" (56C/112T)");
+  printRow(host,"  Memory      2048 GiB DDR5");
+  printRow(host,"  Storage     30.72 TB NVMe (U.2)");
+  printRow(host,"  Network     "+a.hcaCount+"× "+a.hcaSpeed+", 2× 200G Ethernet (mgmt)");
+  printRow(host,"  NVLink      "+a.nvlinkGen+" · "+a.nvlinkBW+" per GPU");
+  printRow(host,"  Cooling     "+(a.cooling==="liquid" ? "Direct Liquid Cooling ("+a.coolant+")" : "Air-cooled (front-to-back)"));
   printRow(host,"  OS          "+a.os);
   printRow(host,"  Uptime      "+rnd(4,190)+" days");
-  printRow(host,"  Arm Util.   "+s.dpu.armUtil+"%");
+  printRow(host,"  Avg GPU Ut. "+avgUtil+"%");
+}
+
+function cmdNvsm(host, args){
+  const s = sessions[host]; const a = s.arch;
+  if(args[0]!=="show" || args[1]!=="cooling"){
+    printRow(host,"usage: nvsm show cooling");
+    return;
+  }
+  if(a.cooling !== "liquid"){
+    print(host,"nv bold","  COOLING SUBSYSTEM");
+    printRow(host,"  ─────────────────────────────────────────");
+    printRow(host,"  Cooling Type   Air-cooled (front-to-back)");
+    const avgFan = Math.round(s.gpus.reduce((acc,g)=>acc+g.fan,0)/8);
+    printRow(host,"  Avg Fan Speed  "+avgFan+"%  (8/8 GPU fans nominal)");
+    printRow(host,"  No liquid cooling subsystem detected on this platform.");
+    return;
+  }
+  tickCoolant(s.coolant);
+  const c = s.coolant;
+  const lvlCls = c.level>=90?"nv":c.level>=80?"amber":"red";
+  const lvlWord = c.level>=90?"Normal":c.level>=80?"Low":"Critical";
+  print(host,"nv bold","  COOLING SUBSYSTEM (CDU)");
+  printRow(host,"  ─────────────────────────────────────────");
+  printRow(host,"  Cooling Type    Direct Liquid Cooling");
+  printRow(host,"  Coolant         "+a.coolant);
+  print(host, lvlCls, "  Coolant Level   "+c.level+"%  ("+lvlWord+")");
+  printRow(host,"  Flow Rate       "+c.flow+" L/min");
+  printRow(host,"  Supply Temp     "+c.supplyTemp+"°C");
+  printRow(host,"  Return Temp     "+c.returnTemp+"°C  (ΔT "+(c.returnTemp-c.supplyTemp)+"°C)");
+  printRow(host,"  Pump Status     ✓ Running");
+  printRow(host,"  Leak Sensor     "+(c.level<80?"⚠ Check":"✓ Clear"));
 }
 
 // ---------- command dispatcher ----------
@@ -736,10 +859,10 @@ function runCommand(host, raw){
         ["dcgmi discovery -l","list managed GPUs"],
         ["ipmitool sensor list","BMC sensor readings"],
         ["nvlink --status","per-link NVLink throughput"],
-        ["mlxfwmanager -q","query ConnectX/BlueField NIC firmware"],
+        ["mlxfwmanager -q","query ConnectX NIC firmware"],
         ["mst status -v","Mellanox software tools device status"],
         ["ibdev2netdev","map InfiniBand HCAs to net devices"],
-        ["ovs-vsctl show","Open vSwitch bridge/port status (DPU)"],
+        ["nvsm show cooling","liquid/air cooling subsystem status"],
         ["top","live process / load snapshot"],
         ["df -h / free -h / lscpu","filesystem, memory, CPU info"],
         ["nvcc --version","CUDA compiler version"],
@@ -756,14 +879,13 @@ function runCommand(host, raw){
     case "mlxfwmanager": cmdMlxfwmanager(host); return;
     case "mst": cmdMst(host); return;
     case "ibdev2netdev": cmdIbdev2netdev(host); return;
-    case "ovs-vsctl": cmdOvsVsctl(host); return;
+    case "nvsm": cmdNvsm(host,args); return;
     case "top": cmdTop(host); return;
     case "df": cmdDf(host); return;
     case "free": cmdFree(host); return;
     case "lscpu": cmdLscpu(host); return;
     case "info": cmdInfo(host); return;
     case "nvcc":
-      if(sessions[host].arch.kind !== "gpu"){ printRow(host,"nvcc: command not found (no CUDA toolkit on this platform)"); return; }
       if(args[0]==="--version"){
         printRow(host,"nvcc: NVIDIA (R) Cuda compiler driver");
         printRow(host,"Copyright (c) 2005-2025 NVIDIA Corporation");
@@ -792,6 +914,86 @@ function runCommand(host, raw){
 
 // ---------- rendering ----------
 function esc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+function fanSVG(pct, color){
+  const dur = Math.max(0.35, (3 - (pct/100)*2.65)).toFixed(2);
+  const blade = "M32,32 C25,21 25,9 32,4 C39,9 39,21 32,32 Z";
+  return `<svg viewBox="0 0 64 64" width="64" height="64" class="fan-icon" style="animation-duration:${dur}s">
+    <circle cx="32" cy="32" r="27" fill="none" stroke="var(--border)" stroke-width="2"/>
+    <g fill="${color}" opacity=".9">
+      <path d="${blade}"/>
+      <path d="${blade}" transform="rotate(90 32 32)"/>
+      <path d="${blade}" transform="rotate(180 32 32)"/>
+      <path d="${blade}" transform="rotate(270 32 32)"/>
+    </g>
+    <circle cx="32" cy="32" r="5" fill="var(--panel-a)" stroke="${color}" stroke-width="2"/>
+  </svg>`;
+}
+
+function coolantTankSVG(pct, flow, color){
+  const top = 16, bottom = 56, h = bottom - top;
+  const fillY = bottom - (Math.max(0,Math.min(100,pct))/100)*h;
+  const period = 14, amp = 2.2;
+  let wave = `M-${period},${fillY.toFixed(1)}`;
+  for(let x=-period; x<=54; x+=period){
+    wave += ` Q${(x+period*0.25).toFixed(1)},${(fillY-amp).toFixed(1)} ${(x+period*0.5).toFixed(1)},${fillY.toFixed(1)}`;
+    wave += ` Q${(x+period*0.75).toFixed(1)},${(fillY+amp).toFixed(1)} ${(x+period).toFixed(1)},${fillY.toFixed(1)}`;
+  }
+  wave += ` V${bottom+4} H-${period} Z`;
+  const dur = Math.max(0.8, 3.2 - (Math.min(40,flow)/40)*2.4).toFixed(2);
+  return `<svg viewBox="0 0 40 72" width="40" height="72" class="coolant-icon">
+    <rect x="17" y="2" width="6" height="8" fill="none" stroke="var(--nv)" stroke-width="1.6"/>
+    <path d="M14,10 L26,10 L20,16 Z" fill="var(--nv)"/>
+    <defs><clipPath id="tankClip"><rect x="6" y="${top}" width="28" height="${h}" rx="7"/></clipPath></defs>
+    <rect x="6" y="${top}" width="28" height="${h}" rx="7" fill="none" stroke="var(--border)" stroke-width="2"/>
+    <g clip-path="url(#tankClip)">
+      <rect x="6" y="${fillY}" width="28" height="${bottom-fillY+4}" fill="${color}" opacity=".5"/>
+      <path class="water-wave" d="${wave}" fill="${color}" opacity=".85" style="animation-duration:${dur}s"/>
+    </g>
+    <path d="M14,56 L26,56 L20,62 Z" fill="var(--text-faint)"/>
+    <rect x="17" y="62" width="6" height="8" fill="none" stroke="var(--text-faint)" stroke-width="1.6"/>
+  </svg>`;
+}
+
+// ---------- sparklines ----------
+function sparklineSVG(values, color){
+  const w = 78, h = 24;
+  if(!values || values.length<2) return `<svg width="${w}" height="${h}" class="sparkline"></svg>`;
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = (max-min) || 1;
+  const stepX = w/(values.length-1);
+  const pts = values.map((v,i)=>`${(i*stepX).toFixed(1)},${(h-2-((v-min)/range)*(h-4)).toFixed(1)}`).join(" ");
+  const lastPt = pts.split(" ").pop().split(",");
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" class="sparkline">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${lastPt[0]}" cy="${lastPt[1]}" r="2.1" fill="${color}"/>
+  </svg>`;
+}
+
+// ---------- event log ----------
+const eventLog = [];
+function logEvent(host, msg, level){
+  eventLog.unshift({time:new Date(), host, msg, level});
+  if(eventLog.length>20) eventLog.length = 20;
+}
+const flavorEvents = [
+  "Diagnostic sweep completed — all checks nominal",
+  "NVLink fabric heartbeat OK",
+  "Slurm scheduler heartbeat OK",
+  "InfiniBand link retrain completed",
+];
+function renderEventLog(){
+  const el = document.getElementById('eventLog');
+  if(!el) return;
+  if(!eventLog.length){ el.innerHTML = `<div class="logrow"><div class="logmsg dim">No events yet — the fleet is quiet.</div></div>`; return; }
+  el.innerHTML = eventLog.map(e=>{
+    const hh = e.time.toTimeString().slice(0,8);
+    return `<div class="logrow">
+      <div class="logmeta"><span class="logdot ${e.level}"></span><span class="logtime">${hh}</span><span class="loghost">${e.host}</span></div>
+      <div class="logmsg">${esc(e.msg)}</div>
+    </div>`;
+  }).join("");
+}
 
 function renderTerm(){
   const s = sessions[active];
@@ -825,6 +1027,7 @@ function bindInput(){
     runCommand(active, inp.value);
     renderTerm();
     renderStatusCard();
+    renderCooling();
   });
   termEl.addEventListener('keydown', (e)=>{
     const inp = e.target;
@@ -851,78 +1054,93 @@ function bindInput(){
 function renderTabs(){
   tabsEl.innerHTML = NODES.map(n=>`<button class="tab ${n.host===active?'active':''}" data-h="${n.host}">${n.host} <span class="archtag">${ARCHES[n.archKey].tag}</span></button>`).join("");
   [...tabsEl.querySelectorAll('.tab')].forEach(btn=>{
-    btn.addEventListener('click', ()=>{ active = btn.dataset.h; renderTabs(); renderTerm(); renderStatusCard(); renderNodeDetails(); });
+    btn.addEventListener('click', ()=>{ active = btn.dataset.h; renderTabs(); renderTerm(); renderStatusCard(); renderCooling(); renderNodeDetails(); });
   });
 }
 
-// ---------- sidebar: gpu grid / dpu panel ----------
+// ---------- sidebar: gpu grid ----------
 function renderStatusCard(){
   const s = sessions[active]; const a = s.arch;
-  document.getElementById('statusCardTitle').textContent = a.kind==="gpu" ? "GPU Status" : "DPU Status";
+  document.getElementById('statusCardTitle').textContent = "GPU Status";
   document.getElementById('statusHostLabel').textContent = active;
   document.getElementById('termHostLabel').innerHTML = "<span>"+active+"</span>";
   document.getElementById('termHostLabel2').textContent = active;
 
   const box = document.getElementById('statusBox');
-  if(a.kind === "gpu"){
-    const memGB = Math.round(a.gpuMemMiB/1024);
-    box.innerHTML = `<div class="gpugrid">` + s.gpus.map(g=>{
-      const tempCls = g.temp>=75?"red":g.temp>=60?"amber":"ok";
-      return `<div class="gpu-card">
-        <div class="gpu-card-top"><span>GPU ${g.id}</span><span class="pill xs">OK</span></div>
-        <div class="gpu-model">${a.gpuModel}</div>
-        <div class="gpu-metrics">
-          <div>Util<b>${g.util}%</b></div>
-          <div>Mem<b>${(g.mem/1024).toFixed(1)}/${memGB}GB</b></div>
-        </div>
-        <div class="gpu-bottom"><span class="temp ${tempCls}">${g.temp}&deg;C</span><span class="pwr">${g.pwr}W/${a.powerCapW}W</span></div>
-      </div>`;
-    }).join("") + `</div>`;
-  } else {
-    const d = s.dpu;
-    const portSpeed = a.hcaSpeed.split("/")[0];
-    box.innerHTML = `
-      <div class="statgrid">
-        <div class="stat"><div class="num">${d.armUtil}%</div><div class="label">ARM CORE UTIL</div></div>
-        <div class="stat"><div class="num">${d.temp}&deg;C</div><div class="label">DPU TEMP</div></div>
+  const memGB = Math.round(a.gpuMemMiB/1024);
+  const utilHist = s.history.map(h=>h.util);
+  box.innerHTML = `
+    <div class="sparkline-row">
+      <span class="sparkline-label">Avg Util &middot; last ~${Math.round(s.history.length*2.2)}s</span>
+      ${sparklineSVG(utilHist, "var(--nv)")}
+    </div>
+    <div class="gpugrid">` + s.gpus.map(g=>{
+    const tempCls = g.temp>=75?"red":g.temp>=60?"amber":"ok";
+    return `<div class="gpu-card">
+      <div class="gpu-card-top"><span>GPU ${g.id}</span><span class="pill xs">OK</span></div>
+      <div class="gpu-model">${a.gpuModel}</div>
+      <div class="gpu-metrics">
+        <div>Util<b>${g.util}%</b></div>
+        <div>Mem<b>${(g.mem/1024).toFixed(1)}/${memGB}GB</b></div>
       </div>
-      <div class="rowline"><span>Port 0 (mlx5_0)</span><span class="pill xs">&check; ${d.port0}% &middot; ${portSpeed}</span></div>
-      <div class="rowline"><span>Port 1 (mlx5_1)</span><span class="pill xs">&check; ${d.port1}% &middot; ${portSpeed}</span></div>
-      <div class="rowline"><span>OVS HW Offload</span><span class="pill xs">&check; Enabled</span></div>
+      <div class="gpu-bottom"><span class="temp ${tempCls}">${g.temp}&deg;C</span><span class="pwr">${g.pwr}W/${a.powerCapW}W</span></div>
+    </div>`;
+  }).join("") + `</div>`;
+}
+
+function renderCooling(){
+  const s = sessions[active]; const a = s.arch;
+  document.getElementById('coolingHostLabel').textContent = active;
+  const box = document.getElementById('coolingBox');
+  const tempHist = s.history.map(h=>h.temp);
+  const lastTemp = tempHist[tempHist.length-1];
+  const tempColor = lastTemp>=75 ? "var(--red)" : lastTemp>=60 ? "var(--amber)" : "var(--nv)";
+  const sparkRow = `
+    <div class="sparkline-row">
+      <span class="sparkline-label">Avg Temp &middot; last ~${Math.round(s.history.length*2.2)}s</span>
+      ${sparklineSVG(tempHist, tempColor)}
+    </div>`;
+  if(a.cooling === "liquid"){
+    const c = s.coolant;
+    const lvlColor = c.level>=90 ? "var(--nv)" : c.level>=80 ? "var(--amber)" : "var(--red)";
+    box.innerHTML = sparkRow + `
+      <div class="cool-icon-wrap">${coolantTankSVG(c.level, c.flow, lvlColor)}</div>
+      <div class="statgrid">
+        <div class="stat"><div class="num" style="color:${lvlColor}">${c.level}%</div><div class="label">COOLANT LEVEL</div></div>
+        <div class="stat"><div class="num">${c.flow} L/min</div><div class="label">FLOW RATE</div></div>
+      </div>
+      <div class="rowline"><span>&#8595; Coolant Intake</span><span>${c.supplyTemp}&deg;C</span></div>
+      <div class="rowline"><span>&#8593; Coolant Return</span><span>${c.returnTemp}&deg;C</span></div>
+      <div class="rowline"><span>Pump Status</span><span class="pill xs">&check; Running</span></div>
+      <div class="rowline"><span>Leak Sensor</span><span class="pill xs">${c.level<80 ? "&#9888; Check" : "&check; Clear"}</span></div>
+    `;
+  } else {
+    const avgFan = Math.round(s.gpus.reduce((acc,g)=>acc+g.fan,0)/8);
+    box.innerHTML = sparkRow + `
+      <div class="cool-icon-wrap">${fanSVG(avgFan, "var(--nv)")}</div>
+      <div class="statgrid">
+        <div class="stat"><div class="num">${avgFan}%</div><div class="label">AVG FAN SPEED</div></div>
+        <div class="stat"><div class="num">Air</div><div class="label">COOLING TYPE</div></div>
+      </div>
+      <div class="rowline"><span>GPU Fans</span><span class="pill xs">&check; 8/8 Nominal</span></div>
     `;
   }
 }
 
 function renderNodeDetails(){
   const s = sessions[active]; const a = s.arch;
-  let rows;
-  if(a.kind === "gpu"){
-    rows = [
-      ["Hostname", active+".cluster.local"],
-      ["System Type", a.label],
-      ["CPU", a.cpu],
-      ["Cores", a.coresLabel],
-      ["Driver Version", a.driver],
-      ["CUDA Version", a.cuda],
-      ["OS Version", a.os],
-      ["Slurm State","✓ idle"],
-      ["InfiniBand HCAs", "✓ "+a.hcaCount+" Active"],
-      ["NVLink Health","✓ 8/8 GPUs OK"],
-    ];
-  } else {
-    rows = [
-      ["Hostname", active+".cluster.local"],
-      ["System Type", a.label],
-      ["CPU", a.cpu],
-      ["Cores", a.coresLabel],
-      ["DOCA Version", a.doca],
-      ["Memory", a.memGB+" GB "+a.memType],
-      ["OS Version", a.os],
-      ["Node Role","Network / Storage Offload"],
-      ["Network Ports","✓ "+a.hcaCount+" Active ("+a.hcaSpeed+")"],
-      ["OVS HW Offload","✓ Enabled"],
-    ];
-  }
+  const rows = [
+    ["Hostname", active+".cluster.local"],
+    ["System Type", a.label],
+    ["CPU", a.cpu],
+    ["Cores", a.coresLabel],
+    ["Driver Version", a.driver],
+    ["CUDA Version", a.cuda],
+    ["OS Version", a.os],
+    ["Slurm State","✓ idle"],
+    ["InfiniBand HCAs", "✓ "+a.hcaCount+" Active"],
+    ["NVLink Health","✓ 8/8 GPUs OK"],
+  ];
   document.getElementById('nodeDetails').innerHTML = rows.map(([l,r])=>
     `<div class="r"><span>${l}</span><span>${r}</span></div>`
   ).join("");
@@ -932,10 +1150,38 @@ function renderNodeDetails(){
 setInterval(()=>{
   NODES.forEach(n=>{
     const s = sessions[n.host];
-    if(s.arch.kind === "gpu") s.gpus.forEach(g=>tickGpu(g,s.arch));
-    else tickDpu(s.dpu);
+    s.gpus.forEach(g=>tickGpu(g,s.arch));
+    if(s.coolant) tickCoolant(s.coolant);
+
+    const avgUtil = Math.round(s.gpus.reduce((acc,g)=>acc+g.util,0)/8);
+    const maxTemp = Math.max(...s.gpus.map(g=>g.temp));
+    const avgTemp = Math.round(s.gpus.reduce((acc,g)=>acc+g.temp,0)/8);
+    s.history.push({util:avgUtil, temp:avgTemp});
+    if(s.history.length>30) s.history.shift();
+
+    const tz = tempZone(maxTemp);
+    if(tz !== s.prevTempZone){
+      if(tz==="warn") logEvent(n.host, `GPU temperature reached ${maxTemp}°C`, "warn");
+      else if(tz==="crit") logEvent(n.host, `GPU temperature critical at ${maxTemp}°C`, "crit");
+      else if(s.prevTempZone!=="ok") logEvent(n.host, `GPU temperature back to normal (${maxTemp}°C)`, "ok");
+      s.prevTempZone = tz;
+    }
+    if(s.coolant){
+      const lz = levelZone(s.coolant.level);
+      if(lz !== s.prevLevelZone){
+        if(lz==="warn") logEvent(n.host, `Coolant level dropped to ${s.coolant.level}%`, "warn");
+        else if(lz==="crit") logEvent(n.host, `Coolant level critical at ${s.coolant.level}%`, "crit");
+        else if(s.prevLevelZone!=="ok") logEvent(n.host, `Coolant level recovered to ${s.coolant.level}%`, "ok");
+        s.prevLevelZone = lz;
+      }
+    }
+    if(Math.random() < 0.035){
+      logEvent(n.host, pick(flavorEvents), "ok");
+    }
   });
   renderStatusCard();
+  renderCooling();
+  renderEventLog();
 }, 2200);
 
 document.getElementById('resetBtn').addEventListener('click', ()=>{
@@ -950,7 +1196,9 @@ function boot(){
   renderTabs();
   renderTerm();
   renderStatusCard();
+  renderCooling();
   renderNodeDetails();
+  renderEventLog();
   bindInput();
 }
 boot();
