@@ -128,10 +128,22 @@ body{
 
 .sidebar{
   background:var(--panel-b);
-  padding:14px;
+  padding:14px 22px 14px 14px;
   display:flex; flex-direction:column; gap:12px;
-  overflow-y:auto;
+  overflow-y:scroll;
   min-height:0;
+  position:relative;
+  scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{ display:none; width:0; height:0; }
+/* custom scrollbar indicator — always visible, not hover/OS-overlay dependent */
+.custom-scrollbar-track{
+  position:absolute; top:0; right:4px; bottom:0; width:8px;
+  background:rgba(255,255,255,.1); border-radius:4px; pointer-events:none;
+}
+.custom-scrollbar-thumb{
+  position:absolute; top:0; left:0; width:8px;
+  background:#fff; border-radius:4px; pointer-events:none;
 }
 .card{
   background:linear-gradient(160deg, var(--panel-a), var(--panel-b));
@@ -428,9 +440,7 @@ body{
         <div class="card">
           <div class="card-head">Switch Info</div>
           <div id="switchInfoBox"></div>
-        </div>
-        <div class="card">
-          <div class="card-head">Port Status</div>
+          <div class="card-head" style="margin-top:12px">Port Status</div>
           <div id="switchPortsBox"></div>
         </div>
         <div class="card">
@@ -560,7 +570,7 @@ const NODES = [
 
 const COMMANDS = ["nvidia-smi","dcgmi","ipmitool","nvcc","top","df","free","uptime","hostname",
   "whoami","lscpu","clear","history","help","info","nvlink","mlxfwmanager","mst","ibdev2netdev",
-  "nvsm","ibstat","numactl","lspci","nvme","systemctl","fielddiag","exit","cat","ls"];
+  "nvsm","ibstat","numactl","lspci","nvme","systemctl","fielddiag","reboot","exit","cat","ls"];
 
 function pad(s,w,left){ s=String(s); if(s.length>=w) return s.slice(0,w); const p=' '.repeat(w-s.length); return left?p+s:s+p; }
 function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
@@ -593,6 +603,7 @@ NODES.forEach(n=>{
     prevTempZone: tempZone(Math.max(...gpus.map(g=>g.temp))),
     prevLevelZone: coolant ? levelZone(coolant.level) : null,
     labGpuFault: null, labCoolantFault: false, labFabricFault: false, labHcaFault: null, switchPortDown: false,
+    labGpuCardFault: null, rebooting: false,
     lines: []
   };
 });
@@ -642,7 +653,7 @@ function tickCoolant(c){
 }
 // lab-fault-aware tick wrappers: a GPU or coolant loop held in a fault stays stuck until resolved
 function tickAllGpus(s){
-  s.gpus.forEach(g=>{ if(s.labGpuFault===g.id) return; tickGpu(g, s.arch); });
+  s.gpus.forEach(g=>{ if(s.labGpuFault===g.id || s.labGpuCardFault===g.id) return; tickGpu(g, s.arch); });
 }
 function tickCoolantIfFree(s){
   if(s.coolant && !s.labCoolantFault) tickCoolant(s.coolant);
@@ -695,6 +706,13 @@ function cmdNvidiaSmi(host, args){
   print(host,"", "|=========================================+======================+======================|");
   s.gpus.forEach(g=>{
     const bus = `${pad(g.id+27,2,true)}:00.0`;
+    if(s.labGpuCardFault===g.id){
+      print(host,"red", `|   ${g.id}  NVIDIA ${pad(a.gpuModel,13)} ERR!       | 00000000:${bus} Off |                 ERR! |`);
+      print(host,"red", ` ERR!   ERR!    ERR!         ERR! / ${a.powerCapW}W |    ERR!MiB / ${memCap}MiB |    ERR!      Unknown |`);
+      print(host,"faint", "|                                         |                      |             Disabled |");
+      print(host,"", "+-----------------------------------------+----------------------+----------------------+");
+      return;
+    }
     const perf = g.util>25?"P0":"P8";
     const tempCls = g.temp>=75?"red":g.temp>=60?"amber":"";
     const utilStr = pad(g.util+"%",4,true);
@@ -703,6 +721,10 @@ function cmdNvidiaSmi(host, args){
     print(host,"faint", "|                                         |                      |             Disabled |");
     print(host,"", "+-----------------------------------------+----------------------+----------------------+");
   });
+  if(s.labGpuCardFault!==null && s.labGpuCardFault!==undefined){
+    print(host,"red bold","");
+    print(host,"red bold",`  ERR! GPU ${s.labGpuCardFault} has fallen off the bus (Xid 79). The driver cannot communicate with this device.`);
+  }
   print(host,"","");
   print(host,"", "+-----------------------------------------------------------------------------------------+");
   print(host,"dim", "| Processes:                                                                               |");
@@ -715,10 +737,14 @@ function cmdNvidiaSmi(host, args){
   });
   if(!procs.length) print(host,"dim","|  No running processes found                                                              |");
   print(host,"", "+-----------------------------------------------------------------------------------------+");
-  const hotGpus = s.gpus.filter(g=>g.temp>=75);
+  const hotGpus = s.gpus.filter(g=>g.temp>=75 && s.labGpuCardFault!==g.id);
   if(hotGpus.length){
     print(host,"","");
     hotGpus.forEach(g=> printFix(host, `nvidia-smi -r -i ${g.id}`, `GPU ${g.id} at ${g.temp}°C`));
+  }
+  if(s.labGpuCardFault!==null && s.labGpuCardFault!==undefined){
+    print(host,"","");
+    printFix(host, `nvidia-smi -r -i ${s.labGpuCardFault}`, "attempt an in-band reset first");
   }
 }
 
@@ -731,6 +757,11 @@ function cmdGpuReset(host, args){
     return;
   }
   const g = s.gpus[gpuId];
+  if(s.labGpuCardFault === gpuId){
+    printRow(host, `GPU 00000000:${pad(gpuId+27,2,true)}:00.0: in-use by another client`);
+    print(host, "red", `Unable to reset GPU ${gpuId}: GPU is lost. Reboot the system to recover this GPU.`);
+    return;
+  }
   const wasFaulted = s.labGpuFault === gpuId;
   g.temp = rnd(34,46);
   g.util = rnd(4,20);
@@ -740,6 +771,57 @@ function cmdGpuReset(host, args){
   printRow(host, `GPU 00000000:${pad(gpuId+27,2,true)}:00.0 was successfully reset.`);
   print(host, "nv", "All done.");
   tryResolveLab(host, "nvidia-smi -r -i "+gpuId);
+}
+
+function cmdReboot(host){
+  const s = sessions[host]; const a = s.arch;
+  if(s.rebooting) return;
+  print(host, "amber bold", `Broadcast message from root@${host} (console):`);
+  print(host, "amber", "The system is going down for reboot NOW!");
+  printRow(host, "");
+  printRow(host, "Stopping Slurm daemon ... done");
+  printRow(host, "Stopping NVIDIA Fabric Manager service ... done");
+  printRow(host, "Unmounting /mnt/models ... done");
+  printRow(host, "Syncing disks ... done");
+  print(host, "dim", "Rebooting ...");
+  s.rebooting = true;
+  renderTerm();
+
+  const resolvingCardFault = s.labGpuCardFault;
+  setTimeout(()=>{
+    s.gpus.forEach((g,i)=>{
+      if(s.labGpuFault===i) return; // thermal-fault GPU stays stuck until explicitly reset
+      g.util = rnd(4,16);
+      g.mem = rnd(500, Math.round(a.gpuMemMiB*0.04));
+      g.temp = rnd(30,40);
+      g.pwr = rnd(Math.round(a.powerCapW*0.09), Math.round(a.powerCapW*0.16));
+      g.fan = rnd(25,34);
+    });
+    if(s.labGpuCardFault!==null && s.labGpuCardFault!==undefined){
+      s.labGpuCardFault = null;
+    }
+    if(s.coolant && !s.labCoolantFault){
+      s.coolant.supplyTemp = rnd(24,27);
+      s.coolant.returnTemp = s.coolant.supplyTemp + rnd(6,9);
+      s.coolant.flow = rnd(24,32);
+    }
+    s.switchPortDown = false;
+    s.hist = []; s.histPos = 0;
+    s.rebooting = false;
+    s.lines = bootBanner(host);
+    logEvent(host, "Node rebooted", "ok");
+    if(resolvingCardFault!==null && resolvingCardFault!==undefined){
+      tryResolveLab(host, "reboot");
+    }
+    if(active===host){
+      renderTerm();
+      renderStatusCard();
+      renderCooling();
+      renderNodeDetails();
+      renderLab();
+      renderAlerts();
+    }
+  }, 2000);
 }
 
 function uuidLike(id, host){
@@ -793,21 +875,26 @@ function cmdDcgmi(host,args){
   print(host,"","+---------------------------+------------------------------------------------+");
   print(host,"","| Diagnostic                | Result                                           |");
   print(host,"","+===========================+==================================================+");
+  const hasCardFault = s.labGpuCardFault!==null && s.labGpuCardFault!==undefined;
   const checks = ["Deployment","NVLink","GPU Memory","Diagnostic Message","PCIe","SM Stress","Targeted Stress","Memory Bandwidth","ECC"];
   const failed = [];
   checks.forEach(c=>{
-    const forcedFail = c==="NVLink" && s.labFabricFault;
+    const forcedFail = (c==="NVLink" && s.labFabricFault) || (c==="ECC" && hasCardFault);
     const pass = forcedFail ? false : Math.random()>0.06;
     if(!pass) failed.push(c);
     print(host, pass?"nv":(forcedFail?"red":"amber"), `| ${pad(c,25)} | ${pad(pass?"Pass":(forcedFail?"Fail":"Warn"), 48)} |`);
   });
   print(host,"","+---------------------------+------------------------------------------------+");
+  if(hasCardFault){
+    print(host,"red bold","");
+    print(host,"red bold",`  Uncorrectable double-bit ECC error on GPU ${s.labGpuCardFault} — device has been dropped from the bus.`);
+  }
   if(failed.length){
     const fixMap = {
       "NVLink": ["systemctl restart nvidia-fabricmanager", null],
       "Deployment": ["systemctl restart nvidia-fabricmanager", null],
       "GPU Memory": ["nvidia-smi -r -i <gpu_id>", "re-run nvidia-smi to identify the affected GPU"],
-      "ECC": ["nvidia-smi -r -i <gpu_id>", "re-run nvidia-smi to identify the affected GPU"],
+      "ECC": hasCardFault ? ["reboot", "in-band reset cannot recover a GPU that has fallen off the bus"] : ["nvidia-smi -r -i <gpu_id>", "re-run nvidia-smi to identify the affected GPU"],
       "PCIe": ["fielddiag", "full sweep to isolate the faulty slot"],
       "SM Stress": ["fielddiag", null],
       "Targeted Stress": ["fielddiag", null],
@@ -1270,6 +1357,67 @@ const LABS = [
     resolveCmd:"mlxfwmanager --reset",
     resolveLabel:"Reset the affected adapter",
   },
+  {
+    id:"gpucard", title:"GPU Fallen Off The Bus", host:"dgx-h100-01", type:"gpucard", gpuIndex:5,
+    briefing:"A training job on dgx-h100-01 just crashed with a CUDA Xid 79 error. The GPU appears to have dropped off the PCIe bus entirely — an in-band reset may not be enough.",
+    steps:[
+      {label:"Check live GPU status", cmd:"nvidia-smi"},
+      {label:"Attempt an in-band GPU reset", cmd:"nvidia-smi -r -i 5"},
+    ],
+    resolveCmd:"reboot",
+    resolveLabel:"Reboot the node to reinitialize the PCIe link",
+  },
+  {
+    id:"gpufail2", title:"GPU Double-Bit ECC Failure", host:"dgx-h100-01", type:"gpucard", gpuIndex:2,
+    briefing:"dcgmi is reporting an uncorrectable double-bit ECC error on dgx-h100-01. The GPU has been automatically marked unhealthy and dropped from the bus.",
+    steps:[
+      {label:"Check live GPU status", cmd:"nvidia-smi"},
+      {label:"Run a diagnostic sweep", cmd:"dcgmi diag -r 1"},
+      {label:"Attempt an in-band GPU reset", cmd:"nvidia-smi -r -i 2"},
+    ],
+    resolveCmd:"reboot",
+    resolveLabel:"Reboot the node to reinitialize the PCIe link",
+  },
+  {
+    id:"coolant2", title:"Coolant Leak Detected", host:"dgx-vr200-01", type:"coolant",
+    briefing:"Facilities reports falling coolant reservoir levels on dgx-vr200-01 — possible leak in the CDU loop.",
+    steps:[
+      {label:"Check the cooling subsystem", cmd:"nvsm show cooling"},
+      {label:"Review BMC sensor readings", cmd:"ipmitool sensor list"},
+    ],
+    resolveCmd:"nvsm repair cooling",
+    resolveLabel:"Repair the cooling subsystem",
+  },
+  {
+    id:"fabric2", title:"NVSwitch Failure", host:"dgx-b200-01", type:"fabric",
+    briefing:"GPU-to-GPU bandwidth on dgx-b200-01 has collapsed — NCCL all-reduce jobs are falling back to PCIe.",
+    steps:[
+      {label:"Run a GPU diagnostic sweep", cmd:"dcgmi diag -r 1"},
+      {label:"Check the fabric manager service", cmd:"systemctl status nvidia-fabricmanager"},
+    ],
+    resolveCmd:"systemctl restart nvidia-fabricmanager",
+    resolveLabel:"Restart the fabric manager service",
+  },
+  {
+    id:"network2", title:"HCA Link Flapping", host:"dgx-h200-01", type:"network", hcaIndex:4,
+    briefing:"dgx-h200-01's InfiniBand link keeps flapping between up and down, causing repeated job retries.",
+    steps:[
+      {label:"Check InfiniBand port status", cmd:"ibstat"},
+      {label:"Map HCAs to net devices", cmd:"ibdev2netdev"},
+    ],
+    resolveCmd:"mlxfwmanager --reset",
+    resolveLabel:"Reset the affected adapter",
+  },
+  {
+    id:"gpucard3", title:"GPU Memory Row-Remap Failure", host:"dgx-gb200-01", type:"gpucard", gpuIndex:6,
+    briefing:"A GPU on dgx-gb200-01 triggered an uncorrectable HBM row-remap failure and dropped off the bus mid-job.",
+    steps:[
+      {label:"Check live GPU status", cmd:"nvidia-smi"},
+      {label:"Attempt an in-band GPU reset", cmd:"nvidia-smi -r -i 6"},
+    ],
+    resolveCmd:"reboot",
+    resolveLabel:"Reboot the node to reinitialize the PCIe link",
+  },
 ];
 
 let activeLab = null;
@@ -1281,6 +1429,7 @@ function clearLabFault(lab){
   if(lab.type==="coolant") s.labCoolantFault = false;
   if(lab.type==="fabric") s.labFabricFault = false;
   if(lab.type==="network") s.labHcaFault = null;
+  if(lab.type==="gpucard") s.labGpuCardFault = null;
 }
 
 function startLab(id){
@@ -1308,6 +1457,13 @@ function startLab(id){
     s.labFabricFault = true;
   } else if(def.type==="network"){
     s.labHcaFault = def.hcaIndex;
+  } else if(def.type==="gpucard"){
+    s.labGpuCardFault = def.gpuIndex;
+    s.gpus[def.gpuIndex].util = 0;
+    s.gpus[def.gpuIndex].temp = 0;
+    s.gpus[def.gpuIndex].mem = 0;
+    s.gpus[def.gpuIndex].pwr = 0;
+    s.gpus[def.gpuIndex].fan = 0;
   }
   logEvent(def.host, "Lab scenario started: "+def.title, "warn");
   renderLab();
@@ -1364,6 +1520,13 @@ function labVisualHTML(lab){
     curVal = ok ? "Up" : "Down";
     tgtIcon = portSVG(true, "var(--ok)");
     tgtVal = "Up";
+  } else if(lab.type==="gpucard"){
+    const ok = s.labGpuCardFault===null || s.labGpuCardFault===undefined;
+    curColor = ok ? "var(--ok)" : "var(--red)";
+    curIcon = gpuCardSVG(ok, curColor);
+    curVal = ok ? "On Bus" : "Lost";
+    tgtIcon = gpuCardSVG(true, "var(--ok)");
+    tgtVal = "On Bus";
   } else {
     return "";
   }
@@ -1436,7 +1599,7 @@ let switchHostname = "mlx-sw01";
 const SWITCH_COMMANDS = ["enable","disable","configure terminal","interface","shutdown","no shutdown",
   "description","hostname","ip domain-name","no ip domain-lookup","enable secret",
   "show interfaces status","show interfaces counters","show interface","show version",
-  "show system","show running-config","write memory","exit","end","help","history","clear"];
+  "show system","show running-config","write memory","reload","exit","end","help","history","clear"];
 const switchState = {
   model: "NVIDIA Quantum-2 QM9700",
   os: "MLNX-OS (Onyx) 5.9.3104",
@@ -1448,12 +1611,45 @@ const switchState = {
   domainLookup: true,
   enableSecret: "",
   awaitingEnablePassword: false,
+  awaitingReloadConfirm: false,
+  rebooting: false,
+  savedConfig: null,
   ports: NODES.map((n,i)=>({
     id:i+1, label:`Gi1/${i+1}`, node:n.host, adminUp:true, desc:"Link to "+n.host,
     rxGbps:0, txGbps:0, rxBytes:0, txBytes:0, rxPkts:0, txPkts:0, history:[]
   })),
   cwd:"~", hist:[], histPos:0, lines:[],
 };
+
+function snapshotSwitchConfig(){
+  return {
+    hostname: switchHostname,
+    domainName: switchState.domainName,
+    domainLookup: switchState.domainLookup,
+    enableSecret: switchState.enableSecret,
+    ports: switchState.ports.map(p=>({id:p.id, adminUp:p.adminUp, desc:p.desc})),
+  };
+}
+function switchConfigDirty(){
+  if(!switchState.savedConfig) return false;
+  const cur = snapshotSwitchConfig();
+  return JSON.stringify(cur) !== JSON.stringify(switchState.savedConfig);
+}
+function applySwitchConfig(snap){
+  switchHostname = snap.hostname;
+  switchState.domainName = snap.domainName;
+  switchState.domainLookup = snap.domainLookup;
+  switchState.enableSecret = snap.enableSecret;
+  snap.ports.forEach(sp=>{
+    const p = switchState.ports.find(pp=>pp.id===sp.id);
+    if(!p) return;
+    p.adminUp = sp.adminUp;
+    p.desc = sp.desc;
+    const s = sessions[p.node];
+    if(s) s.switchPortDown = !sp.adminUp;
+  });
+}
+switchState.savedConfig = snapshotSwitchConfig();
 
 function switchPortForNode(host){
   return switchState.ports.find(p=>p.node===host);
@@ -1484,6 +1680,7 @@ function switchPrintRow(text){ switchPrint("", text); }
 
 function switchPromptPlain(){
   if(switchState.awaitingEnablePassword) return "Password:";
+  if(switchState.awaitingReloadConfirm) return "Proceed with reload? [confirm]";
   switch(switchState.mode){
     case "user": return `${switchHostname}>`;
     case "enable": return `${switchHostname}#`;
@@ -1602,6 +1799,7 @@ function switchHelp(){
       ["show running-config","current configuration"],
       ["show version / show system","OS version / chassis info"],
       ["write memory","save the running configuration"],
+      ["reload","reboot the switch (prompts for confirmation)"],
       ["disable","return to user EXEC mode"],
     ],
     config: [
@@ -1638,7 +1836,39 @@ function isCmd(token, full){
   return !!token && full.startsWith(token.toLowerCase());
 }
 
+function switchReload(){
+  const dirty = switchConfigDirty();
+  switchPrintRow("");
+  if(dirty) switchPrintRow("System configuration has been modified. Save? [yes/no]: no");
+  switchPrintRow("Proceeding with reload...");
+  switchState.rebooting = true;
+  renderSwitchTerm();
+
+  setTimeout(()=>{
+    if(dirty && switchState.savedConfig){
+      applySwitchConfig(switchState.savedConfig);
+    }
+    switchState.mode = "user";
+    switchState.configIfPort = null;
+    switchState.awaitingEnablePassword = false;
+    switchState.hist = []; switchState.histPos = 0;
+    switchState.bootedDaysAgo = 0;
+    switchState.rebooting = false;
+    switchState.lines = switchBootBanner();
+    if(dirty) logEvent(switchHostname, "Switch reloaded — unsaved configuration changes were discarded", "warn");
+    else logEvent(switchHostname, "Switch reloaded", "ok");
+    if(activeView==="switch"){
+      renderSwitchTerm();
+      renderSwitchPorts();
+      renderSwitchInfo();
+      renderSwitchTraffic();
+      renderTabs();
+    }
+  }, 2200);
+}
+
 function runSwitchCommand(raw){
+  if(switchState.rebooting) return;
   const trimmed = raw.trim();
   const promptAtEntry = switchPromptPlain();
 
@@ -1649,6 +1879,17 @@ function runSwitchCommand(raw){
       switchState.mode = "enable";
     } else {
       switchPrint("red", "% Access denied");
+    }
+    return;
+  }
+
+  if(switchState.awaitingReloadConfirm){
+    switchState.awaitingReloadConfirm = false;
+    switchPrint("prompt-echo", {echo:true, text:raw, prompt:promptAtEntry});
+    if(trimmed === "" || /^y/i.test(trimmed)){
+      switchReload();
+    } else {
+      switchPrintRow("Reload cancelled.");
     }
     return;
   }
@@ -1713,11 +1954,21 @@ function runSwitchCommand(raw){
     }
     if(isCmd(cmd,"write")){
       if(!isCmd(args[0],"memory")) return switchIncomplete();
-      switchPrintRow("Building configuration..."); switchPrint("nv","[OK]"); return;
+      switchPrintRow("Building configuration...");
+      switchState.savedConfig = snapshotSwitchConfig();
+      switchPrint("nv","[OK]"); return;
     }
     if(isCmd(cmd,"copy")){
-      if(isCmd(args[0],"running-config") && isCmd(args[1],"startup-config")){ switchPrintRow("Building configuration..."); switchPrint("nv","[OK]"); return; }
+      if(isCmd(args[0],"running-config") && isCmd(args[1],"startup-config")){
+        switchPrintRow("Building configuration...");
+        switchState.savedConfig = snapshotSwitchConfig();
+        switchPrint("nv","[OK]"); return;
+      }
       return switchIncomplete();
+    }
+    if(isCmd(cmd,"reload")){
+      switchState.awaitingReloadConfirm = true;
+      return;
     }
     return switchInvalid();
   }
@@ -1808,8 +2059,12 @@ function renderSwitchTerm(){
       html += `<div class="line ${cls||''}">${esc(text)}</div>`;
     }
   });
-  const inputType = switchState.awaitingEnablePassword ? "password" : "text";
-  html += `<form class="row" id="switchLiveForm"><span class="prompt">${esc(switchPromptPlain())} </span><div class="inputWrap"><input id="switchLiveInput" type="${inputType}" autocomplete="off" spellcheck="false" /></div></form>`;
+  if(switchState.rebooting){
+    html += `<div class="row"><span class="prompt" style="color:var(--text-faint)">[reloading...] </span></div>`;
+  } else {
+    const inputType = switchState.awaitingEnablePassword ? "password" : "text";
+    html += `<form class="row" id="switchLiveForm"><span class="prompt">${esc(switchPromptPlain())} </span><div class="inputWrap"><input id="switchLiveInput" type="${inputType}" autocomplete="off" spellcheck="false" /></div></form>`;
+  }
   const el = document.getElementById('switchTerm');
   if(!el) return;
   el.innerHTML = html;
@@ -1893,6 +2148,7 @@ function renderSwitchInfo(){
 // ---------- command dispatcher ----------
 function runCommand(host, raw){
   const s = sessions[host];
+  if(s.rebooting) return;
   const trimmed = raw.trim();
   s.hist.push(raw); s.histPos = s.hist.length;
   print(host,"prompt-echo", {echo:true, cwd:s.cwd, host, text:raw});
@@ -1928,6 +2184,7 @@ function runCommand(host, raw){
         ["nvme list","NVMe drive inventory and usage"],
         ["systemctl status|restart nvidia-fabricmanager","fabric manager service status / restart"],
         ["fielddiag","full field-diagnostic sweep (GPU/fabric/cooling/network/storage/power)"],
+        ["reboot","reboot this node (reinitializes GPUs, clears bus-level faults)"],
         ["top","live process / load snapshot"],
         ["df -h / free -h / lscpu","filesystem, memory, CPU info"],
         ["nvcc --version","CUDA compiler version"],
@@ -1951,6 +2208,7 @@ function runCommand(host, raw){
     case "nvme": cmdNvmeList(host,args); return;
     case "systemctl": cmdSystemctl(host,args); return;
     case "fielddiag": cmdFieldDiag(host); return;
+    case "reboot": cmdReboot(host); return;
     case "top": cmdTop(host); return;
     case "df": cmdDf(host); return;
     case "free": cmdFree(host); return;
@@ -2049,6 +2307,21 @@ function fabricSVG(ok, color){
   </svg>`;
 }
 
+function gpuCardSVG(ok, color){
+  const borderColor = ok ? "var(--border)" : color;
+  const mark = ok
+    ? `<path d="M55,24 L57,26.5 L61,20.5" stroke="${color}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<path d="M55.5,19.5 L61.5,27.5 M61.5,19.5 L55.5,27.5" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 68 48" width="68" height="48">
+    <rect x="4" y="9" width="40" height="24" rx="3" fill="none" stroke="${borderColor}" stroke-width="2"/>
+    <circle cx="16" cy="21" r="7" fill="none" stroke="${borderColor}" stroke-width="1.6"/>
+    <circle cx="16" cy="21" r="2" fill="${borderColor}"/>
+    <rect x="27" y="14" width="13" height="13" rx="1.5" fill="none" stroke="${borderColor}" stroke-width="1.6"/>
+    <rect x="7" y="33" width="34" height="4" rx="1" fill="${borderColor}" opacity=".7"/>
+    <circle cx="58" cy="24" r="8" fill="none" stroke="${color}" stroke-width="2"/>
+    ${mark}
+  </svg>`;
+}
 function portSVG(ok, color){
   const mark = ok
     ? `<path d="M55,24 L57,26.5 L61,20.5" stroke="${color}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
@@ -2164,6 +2437,9 @@ function renderTerm(){
 
 function inputRowHTML(){
   const s = sessions[active];
+  if(s.rebooting){
+    return `<div class="row"><span class="prompt" style="color:var(--text-faint)">[rebooting...] </span></div>`;
+  }
   return `<form class="row" id="liveForm"><span class="prompt">root@${active}<span class="path">:${s.cwd}#</span> </span><div class="inputWrap"><input id="liveInput" autocomplete="off" spellcheck="false" /></div></form>`;
 }
 
@@ -2209,6 +2485,7 @@ function showView(){
   document.querySelector("main.grid").hidden = activeView!=="dashboard";
   document.getElementById("switchView").hidden = activeView!=="switch";
   document.getElementById("aboutView").hidden = activeView!=="about";
+  if(typeof updateAllCustomScrollbars==="function") updateAllCustomScrollbars();
 }
 
 function renderTabs(){
@@ -2326,6 +2603,39 @@ function renderNodeDetails(){
   ).join("");
 }
 
+// ---------- custom scrollbar (always visible, independent of OS overlay/hover behavior) ----------
+function setupCustomScrollbars(){
+  document.querySelectorAll('.sidebar').forEach(sb=>{
+    if(sb._scrollbarThumb) return;
+    const track = document.createElement('div');
+    track.className = 'custom-scrollbar-track';
+    const thumb = document.createElement('div');
+    thumb.className = 'custom-scrollbar-thumb';
+    track.appendChild(thumb);
+    sb.appendChild(track);
+    sb._scrollbarThumb = thumb;
+    sb.addEventListener('scroll', ()=> updateCustomScrollbar(sb));
+  });
+}
+function updateCustomScrollbar(sb){
+  const thumb = sb._scrollbarThumb;
+  if(!thumb) return;
+  const trackH = sb.clientHeight;
+  const contentH = sb.scrollHeight;
+  if(contentH <= trackH + 1){ thumb.style.display = "none"; return; }
+  const thumbH = Math.max(24, Math.round(trackH * trackH / contentH));
+  const maxScroll = contentH - trackH;
+  const maxThumbTop = trackH - thumbH;
+  const top = maxScroll > 0 ? (sb.scrollTop / maxScroll) * maxThumbTop : 0;
+  thumb.style.display = "block";
+  thumb.style.height = thumbH + "px";
+  thumb.style.transform = `translateY(${top}px)`;
+}
+function updateAllCustomScrollbars(){
+  document.querySelectorAll('.sidebar').forEach(updateCustomScrollbar);
+}
+window.addEventListener('resize', updateAllCustomScrollbars);
+
 // ambient ticking so the console feels alive even at rest
 setInterval(()=>{
   NODES.forEach(n=>{
@@ -2366,6 +2676,7 @@ setInterval(()=>{
   renderAlerts();
   renderSwitchPorts();
   renderSwitchTraffic();
+  updateAllCustomScrollbars();
 }, 2200);
 
 document.getElementById('resetBtn').addEventListener('click', ()=>{
@@ -2393,6 +2704,8 @@ function boot(){
   renderSwitchTraffic();
   bindInput();
   bindSwitchInput();
+  setupCustomScrollbars();
+  updateAllCustomScrollbars();
 }
 boot();
 })();
