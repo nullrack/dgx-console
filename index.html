@@ -1,3 +1,4 @@
+
 <title>DGX Console</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
@@ -22,6 +23,7 @@
   font-family:'JetBrains Mono',Consolas,Monaco,'Courier New',monospace;
 }
 *{box-sizing:border-box;}
+[hidden]{ display:none !important; }
 body{
   margin:0;
   background:var(--bg);
@@ -153,6 +155,44 @@ body{
 .sparkline-label{ font-size:9px; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint); white-space:nowrap; }
 .sparkline{ flex:none; }
 
+.pill.lab-active{ background:rgba(47,129,247,.15); color:var(--nv); border-color:rgba(47,129,247,.35); }
+.pill.lab-done{ background:var(--ok-bg); color:var(--ok); border-color:var(--ok-border); }
+.lab-select{ width:100%; background:var(--panel-a); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:12px; padding:7px 8px; border-radius:6px; margin-bottom:8px; }
+.lab-btn{ width:100%; background:var(--nv); color:#fff; border:none; font-family:inherit; font-weight:700; font-size:12px; padding:8px; border-radius:6px; cursor:pointer; letter-spacing:.02em; }
+.lab-btn:hover{ background:var(--nv-dark); }
+.lab-btn.secondary{ background:transparent; color:var(--text-dim); border:1px solid var(--border); margin-top:8px; }
+.lab-btn.secondary:hover{ color:var(--text); border-color:var(--text-dim); }
+.lab-desc{ font-size:11px; color:var(--text-dim); line-height:1.5; margin:0 0 10px; }
+.lab-briefing{ font-size:12px; color:var(--text-dim); line-height:1.55; margin-bottom:10px; padding:8px 10px; background:rgba(255,255,255,.03); border-left:2px solid var(--nv); border-radius:0 4px 4px 0; }
+.lab-host{ font-size:10.5px; color:var(--nv); font-weight:700; letter-spacing:.03em; margin-bottom:4px; }
+.lab-checklist{ list-style:none; margin:0 0 10px; padding:0; display:flex; flex-direction:column; gap:7px; }
+.lab-step{ display:flex; gap:8px; align-items:flex-start; font-size:11.5px; color:var(--text-dim); }
+.lab-step.done{ color:var(--text); }
+.lab-check{ flex:none; width:14px; height:14px; border-radius:4px; border:1px solid var(--border); margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:9px; }
+.lab-step.done .lab-check{ background:var(--ok-bg); border-color:var(--ok-border); color:var(--ok); }
+.lab-step code{ background:rgba(255,255,255,.06); border-radius:3px; padding:0 4px; color:var(--text); font-size:10.5px; }
+.lab-resolve{ font-size:11.5px; color:var(--text-dim); padding-top:8px; border-top:1px solid var(--border-soft); }
+.lab-resolve code{ display:block; margin-top:5px; background:rgba(255,255,255,.06); border:1px solid var(--border-soft); border-radius:4px; padding:6px 8px; color:var(--nv); font-size:11px; }
+.lab-success{ font-size:12px; color:var(--ok); line-height:1.5; margin-bottom:8px; }
+
+.lab-visual{ display:flex; align-items:center; justify-content:center; gap:10px; padding:12px 4px; margin-bottom:10px; background:rgba(255,255,255,.02); border:1px solid var(--border-soft); border-radius:8px; }
+.lab-visual-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; }
+.lab-visual-label{ font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint); }
+.lab-visual-value{ font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+.lab-visual-value.ok{ color:var(--ok); }
+.lab-visual-arrow{ flex:none; color:var(--text-faint); font-size:18px; }
+.pill.alert-crit{ background:rgba(248,81,73,.15); color:var(--red); border-color:rgba(248,81,73,.35); }
+.alertsbox{ max-height:220px; overflow-y:auto; display:flex; flex-direction:column; }
+.alertrow{ display:flex; gap:9px; padding:8px 0; border-top:1px solid var(--border-soft); }
+.alertrow:first-of-type{ border-top:none; }
+.alertdot{ flex:none; width:7px; height:7px; border-radius:50%; margin-top:5px; background:var(--amber); }
+.alertrow.crit .alertdot{ background:var(--red); }
+.alertbody{ flex:1; min-width:0; }
+.alerttitle{ font-size:12px; font-weight:600; color:var(--amber); }
+.alertrow.crit .alerttitle{ color:var(--red); }
+.alerthost{ font-size:10.5px; color:var(--text-faint); margin-top:1px; }
+.alertclear{ font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:7px; }
+
 .logcard{ max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:9px; }
 .logrow{ display:flex; flex-direction:column; gap:2px; padding-bottom:9px; border-bottom:1px solid var(--border-soft); }
 .logrow:last-child{ border-bottom:none; padding-bottom:0; }
@@ -251,7 +291,7 @@ body{
 .footbar .disclaimer{ text-align:right; max-width:640px; }
 
 /* ---- info sections (about / contribute / disclaimer / security) ---- */
-.infopage{ display:flex; flex-direction:column; gap:16px; }
+.infopage{ display:flex; flex-direction:column; gap:16px; padding:18px; max-height:640px; overflow-y:auto; background:var(--panel-b); }
 .info-card{
   background:linear-gradient(160deg, var(--panel-a), var(--panel-b));
   border:1px solid var(--border);
@@ -320,6 +360,11 @@ body{
   <main class="grid">
     <aside class="sidebar">
       <div class="card">
+        <div class="card-head">Lab Scenario <span class="pill xs" id="labStatusPill">IDLE</span></div>
+        <div id="labBox"></div>
+      </div>
+
+      <div class="card">
         <div class="card-head">Cluster Health <span class="pill xs">OK</span></div>
         <div class="statgrid">
           <div class="stat"><div class="num">5/5</div><div class="label">NODES ONLINE</div></div>
@@ -327,6 +372,11 @@ body{
         </div>
         <div class="rowline"><span>InfiniBand Fabric</span><span class="pill xs">&check; Active</span></div>
         <div class="rowline"><span>NVSwitch Fabric</span><span class="pill xs">&check; Active</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Active Alerts <span class="pill xs" id="alertsCountPill">CLEAR</span></div>
+        <div class="alertsbox" id="alertsBox"></div>
       </div>
 
       <div class="card">
@@ -360,47 +410,75 @@ body{
     </section>
   </main>
 
+  <section id="switchView" hidden>
+    <div class="grid">
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-head">Switch Info</div>
+          <div id="switchInfoBox"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">Port Status</div>
+          <div id="switchPortsBox"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">Network Traffic</div>
+          <div id="switchTrafficBox"></div>
+        </div>
+      </aside>
+
+      <section class="termpanel">
+        <div class="termhead">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="termtitle">Terminal &mdash; <span id="switchTermHostLabel">mlx-sw01</span></div>
+        </div>
+        <div class="termsub">Terminal connected to: <b id="switchTermHostLabel2">mlx-sw01</b></div>
+        <div class="term" id="switchTerm"></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="infopage" id="aboutView" hidden>
+    <div class="info-card">
+      <h2>About This Project</h2>
+      <p>DGX Console is a browser-based simulator of an NVIDIA DGX data center fleet &mdash; H100, H200, B200, GB200, and VR200 nodes &mdash; built for exploring GPU cluster monitoring and command-line tooling (<code>nvidia-smi</code>, <code>dcgmi</code>, <code>ipmitool</code>, NVLink, and ConnectX/InfiniBand utilities) in a safe, consequence-free environment. Every GPU reading, sensor value, and command output is fabricated entirely in your browser &mdash; nothing here is connected to real hardware.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>Contribute &amp; Feedback</h2>
+      <p>This project is open source. Contributions, bug reports, and feature requests are welcome.</p>
+      <div class="info-rows">
+        <div class="r"><span>GitHub Repository</span><a href="https://github.com/nullrack/dgx-console" target="_blank" rel="noopener">DGX Console</a></div>
+        <div class="r"><span>Project Lead</span><span>Dwayne Clarke</span></div>
+      </div>
+      <p>Found a bug or have feedback? <a href="https://github.com/nullrack/dgx-console/issues" target="_blank" rel="noopener">Open an issue on GitHub</a>.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>Legal Disclaimer</h2>
+      <p>DGX Console is an independent, community-built educational and simulation project. It is not developed, sponsored, endorsed, certified, or affiliated with NVIDIA Corporation.</p>
+      <p>NVIDIA, DGX, CUDA, NVLink, NVSwitch, DCGM, NVSM, and other NVIDIA product names, technologies, and trademarks referenced within this project are the property of NVIDIA Corporation and/or its affiliates. Other product names and trademarks referenced within the project are the property of their respective owners. Slurm is a trademark of SchedMD LLC.</p>
+      <p>This project may simulate NVIDIA DGX systems, command-line utilities, hardware configurations, system information, diagnostic output, and administrative workflows for educational and training purposes. Simulated outputs, specifications, configurations, and diagnostic data are approximations and may differ from actual NVIDIA hardware, software, firmware, drivers, or command-line tools.</p>
+      <p>This project is not intended to replace official product documentation, technical support, operational procedures, or professional guidance. Users working with real systems should consult the applicable manufacturer&rsquo;s official documentation before performing configuration, maintenance, troubleshooting, or other administrative operations.</p>
+      <p>This software is provided &ldquo;as is,&rdquo; without warranty of any kind, express or implied, including, but not limited to, warranties of merchantability, fitness for a particular purpose, and noninfringement. To the maximum extent permitted by applicable law, the authors and contributors shall not be liable for any claim, damages, loss, or other liability arising from or related to the use of this software.</p>
+    </div>
+
+    <div class="info-card">
+      <h2>Security &amp; Privacy</h2>
+      <ul class="check-list">
+        <li><span><b>No accounts</b> &mdash; there's nothing to sign up for or log into.</span></li>
+        <li><span><b>100% client-side</b> &mdash; every command, GPU reading, and diagnostic output is generated by JavaScript running in your browser; nothing is sent to a server.</span></li>
+        <li><span><b>No data collection</b> &mdash; no analytics, no tracking, no cookies, no data of any kind is collected.</span></li>
+        <li><span><b>No backend</b> &mdash; this is a single static page; there is no database, authentication service, or server-side component of any kind.</span></li>
+      </ul>
+    </div>
+  </section>
+
   <footer class="footbar">
     <span><b>DGX Console Sim</b> v1.1 &middot; session simulated client-side</span>
     <span class="disclaimer">Not affiliated with or endorsed by NVIDIA Corporation. All NVIDIA trademarks are the property of NVIDIA Corporation. For educational/demo use only.</span>
   </footer>
 </div>
-
-<section class="infopage">
-  <div class="info-card">
-    <h2>About This Project</h2>
-    <p>DGX Console is a browser-based simulator of an NVIDIA DGX data center fleet &mdash; H100, H200, B200, GB200, and VR200 nodes &mdash; built for exploring GPU cluster monitoring and command-line tooling (<code>nvidia-smi</code>, <code>dcgmi</code>, <code>ipmitool</code>, NVLink, and ConnectX/InfiniBand utilities) in a safe, consequence-free environment. Every GPU reading, sensor value, and command output is fabricated entirely in your browser &mdash; nothing here is connected to real hardware.</p>
-  </div>
-
-  <div class="info-card">
-    <h2>Contribute &amp; Feedback</h2>
-    <p>This project is open source. Contributions, bug reports, and feature requests are welcome.</p>
-    <div class="info-rows">
-      <div class="r"><span>GitHub Repository</span><a href="https://github.com/nullrack/dgx-console" target="_blank" rel="noopener">DGX Console</a></div>
-      <div class="r"><span>Project Lead</span><span>Dwayne Clarke</span></div>
-    </div>
-    <p>Found a bug or have feedback? <a href="https://github.com/nullrack/dgx-console/issues" target="_blank" rel="noopener">Open an issue on GitHub</a>.</p>
-  </div>
-
-  <div class="info-card">
-    <h2>Legal Disclaimer</h2>
-    <p>DGX Console is an independent, community-built educational and simulation project. It is not developed, sponsored, endorsed, certified, or affiliated with NVIDIA Corporation.</p>
-    <p>NVIDIA, DGX, CUDA, NVLink, NVSwitch, DCGM, NVSM, and other NVIDIA product names, technologies, and trademarks referenced within this project are the property of NVIDIA Corporation and/or its affiliates. Other product names and trademarks referenced within the project are the property of their respective owners. Slurm is a trademark of SchedMD LLC.</p>
-    <p>This project may simulate NVIDIA DGX systems, command-line utilities, hardware configurations, system information, diagnostic output, and administrative workflows for educational and training purposes. Simulated outputs, specifications, configurations, and diagnostic data are approximations and may differ from actual NVIDIA hardware, software, firmware, drivers, or command-line tools.</p>
-    <p>This project is not intended to replace official product documentation, technical support, operational procedures, or professional guidance. Users working with real systems should consult the applicable manufacturer&rsquo;s official documentation before performing configuration, maintenance, troubleshooting, or other administrative operations.</p>
-    <p>This software is provided &ldquo;as is,&rdquo; without warranty of any kind, express or implied, including, but not limited to, warranties of merchantability, fitness for a particular purpose, and noninfringement. To the maximum extent permitted by applicable law, the authors and contributors shall not be liable for any claim, damages, loss, or other liability arising from or related to the use of this software.</p>
-  </div>
-
-  <div class="info-card">
-    <h2>Security &amp; Privacy</h2>
-    <ul class="check-list">
-      <li><span><b>No accounts</b> &mdash; there's nothing to sign up for or log into.</span></li>
-      <li><span><b>100% client-side</b> &mdash; every command, GPU reading, and diagnostic output is generated by JavaScript running in your browser; nothing is sent to a server.</span></li>
-      <li><span><b>No data collection</b> &mdash; no analytics, no tracking, no cookies, no data of any kind is collected.</span></li>
-      <li><span><b>No backend</b> &mdash; this is a single static page; there is no database, authentication service, or server-side component of any kind.</span></li>
-    </ul>
-  </div>
-</section>
 </div>
 
 <script>
@@ -470,7 +548,7 @@ const NODES = [
 
 const COMMANDS = ["nvidia-smi","dcgmi","ipmitool","nvcc","top","df","free","uptime","hostname",
   "whoami","lscpu","clear","history","help","info","nvlink","mlxfwmanager","mst","ibdev2netdev",
-  "nvsm","exit","cat","ls"];
+  "nvsm","ibstat","numactl","lspci","nvme","systemctl","fielddiag","exit","cat","ls"];
 
 function pad(s,w,left){ s=String(s); if(s.length>=w) return s.slice(0,w); const p=' '.repeat(w-s.length); return left?p+s:s+p; }
 function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
@@ -502,6 +580,7 @@ NODES.forEach(n=>{
     history: [{util:avgUtil0, temp:avgTemp0}],
     prevTempZone: tempZone(Math.max(...gpus.map(g=>g.temp))),
     prevLevelZone: coolant ? levelZone(coolant.level) : null,
+    labGpuFault: null, labCoolantFault: false, labFabricFault: false, labHcaFault: null, switchPortDown: false,
     lines: []
   };
 });
@@ -529,6 +608,9 @@ function print(host, cls, text){
   sessions[host].lines.push([cls, text===undefined ? "" : text]);
 }
 function printRow(host, text){ print(host, "", text); }
+function printFix(host, cmdStr, note){
+  print(host, "amber bold", "  → Suggested fix: "+cmdStr+(note?"   ("+note+")":""));
+}
 
 // ---------- ticking ----------
 function tickGpu(gpu, arch){
@@ -546,6 +628,13 @@ function tickCoolant(c){
   c.supplyTemp = Math.max(22, Math.min(32, c.supplyTemp + rnd(-1,1)));
   c.returnTemp = Math.max(c.supplyTemp+5, Math.min(46, c.returnTemp + rnd(-1,1)));
 }
+// lab-fault-aware tick wrappers: a GPU or coolant loop held in a fault stays stuck until resolved
+function tickAllGpus(s){
+  s.gpus.forEach(g=>{ if(s.labGpuFault===g.id) return; tickGpu(g, s.arch); });
+}
+function tickCoolantIfFree(s){
+  if(s.coolant && !s.labCoolantFault) tickCoolant(s.coolant);
+}
 
 // ---------- command implementations ----------
 
@@ -555,9 +644,25 @@ function nvidiaSmiHeader(){
   return `${days[now.getDay()]} ${mon[now.getMonth()]} ${pad(now.getDate(),2,true)} ${pad(now.getHours(),2,true)}:${pad(now.getMinutes(),2,true)}:${pad(now.getSeconds(),2,true)} ${now.getFullYear()}`;
 }
 
+function cmdNvidiaSmiDmon(host){
+  const s = sessions[host]; const a = s.arch;
+  tickAllGpus(s);
+  const mclk = a.gpuModel.includes("HBM4") ? 6400 : a.gpuModel.includes("HBM3e") ? 4800 : 2619;
+  printRow(host, "# gpu    pwr   temp    sm   mem   enc   dec   mclk   pclk");
+  printRow(host, "# Idx      W     C     %     %     %     %    MHz    MHz");
+  s.gpus.forEach(g=>{
+    const mem = Math.min(99, Math.round(g.util*0.8 + rnd(0,8)));
+    const enc = g.util>50 ? rnd(0,15) : 0;
+    const dec = g.util>50 ? rnd(0,10) : 0;
+    printRow(host, `  ${pad(g.id,3,true)}   ${pad(g.pwr,4,true)}   ${pad(g.temp,4,true)}   ${pad(g.util,4,true)}   ${pad(mem,4,true)}   ${pad(enc,4,true)}   ${pad(dec,4,true)}   ${pad(mclk,4,true)}   ${pad(rnd(1200,1980),4,true)}`);
+  });
+}
+
 function cmdNvidiaSmi(host, args){
   const s = sessions[host]; const a = s.arch;
-  s.gpus.forEach(g=>tickGpu(g,a));
+  if(args[0]==="dmon"){ cmdNvidiaSmiDmon(host); return; }
+  if(args.includes("-r") || args.includes("--gpu-reset")){ cmdGpuReset(host, args); return; }
+  tickAllGpus(s);
 
   if(args.includes("-L")){
     s.gpus.forEach(g=>printRow(host, `GPU ${g.id}: NVIDIA ${a.gpuModel} (UUID: GPU-${uuidLike(g.id,host)})`));
@@ -598,6 +703,31 @@ function cmdNvidiaSmi(host, args){
   });
   if(!procs.length) print(host,"dim","|  No running processes found                                                              |");
   print(host,"", "+-----------------------------------------------------------------------------------------+");
+  const hotGpus = s.gpus.filter(g=>g.temp>=75);
+  if(hotGpus.length){
+    print(host,"","");
+    hotGpus.forEach(g=> printFix(host, `nvidia-smi -r -i ${g.id}`, `GPU ${g.id} at ${g.temp}°C`));
+  }
+}
+
+function cmdGpuReset(host, args){
+  const s = sessions[host]; const a = s.arch;
+  const iIdx = args.indexOf("-i");
+  const gpuId = iIdx>=0 && args[iIdx+1]!==undefined ? parseInt(args[iIdx+1],10) : null;
+  if(gpuId===null || isNaN(gpuId) || gpuId<0 || gpuId>7){
+    printRow(host, "usage: nvidia-smi -r -i <gpu index>");
+    return;
+  }
+  const g = s.gpus[gpuId];
+  const wasFaulted = s.labGpuFault === gpuId;
+  g.temp = rnd(34,46);
+  g.util = rnd(4,20);
+  g.pwr = rnd(Math.round(a.powerCapW*0.11), Math.round(a.powerCapW*0.2));
+  g.fan = rnd(28,42);
+  if(wasFaulted) s.labGpuFault = null;
+  printRow(host, `GPU 00000000:${pad(gpuId+27,2,true)}:00.0 was successfully reset.`);
+  print(host, "nv", "All done.");
+  tryResolveLab(host, "nvidia-smi -r -i "+gpuId);
 }
 
 function uuidLike(id, host){
@@ -652,11 +782,35 @@ function cmdDcgmi(host,args){
   print(host,"","| Diagnostic                | Result                                           |");
   print(host,"","+===========================+==================================================+");
   const checks = ["Deployment","NVLink","GPU Memory","Diagnostic Message","PCIe","SM Stress","Targeted Stress","Memory Bandwidth","ECC"];
+  const failed = [];
   checks.forEach(c=>{
-    const pass = Math.random()>0.06;
-    print(host, pass?"nv":"amber", `| ${pad(c,25)} | ${pad(pass?"Pass":"Warn", 48)} |`);
+    const forcedFail = c==="NVLink" && s.labFabricFault;
+    const pass = forcedFail ? false : Math.random()>0.06;
+    if(!pass) failed.push(c);
+    print(host, pass?"nv":(forcedFail?"red":"amber"), `| ${pad(c,25)} | ${pad(pass?"Pass":(forcedFail?"Fail":"Warn"), 48)} |`);
   });
   print(host,"","+---------------------------+------------------------------------------------+");
+  if(failed.length){
+    const fixMap = {
+      "NVLink": ["systemctl restart nvidia-fabricmanager", null],
+      "Deployment": ["systemctl restart nvidia-fabricmanager", null],
+      "GPU Memory": ["nvidia-smi -r -i <gpu_id>", "re-run nvidia-smi to identify the affected GPU"],
+      "ECC": ["nvidia-smi -r -i <gpu_id>", "re-run nvidia-smi to identify the affected GPU"],
+      "PCIe": ["fielddiag", "full sweep to isolate the faulty slot"],
+      "SM Stress": ["fielddiag", null],
+      "Targeted Stress": ["fielddiag", null],
+      "Memory Bandwidth": ["fielddiag", null],
+      "Diagnostic Message": ["fielddiag", null],
+    };
+    print(host,"","");
+    const shown = new Set();
+    failed.forEach(c=>{
+      const fix = fixMap[c];
+      if(!fix || shown.has(fix[0])) return;
+      shown.add(fix[0]);
+      printFix(host, fix[0], fix[1]);
+    });
+  }
 }
 
 function cmdIpmitool(host){
@@ -679,7 +833,7 @@ function cmdIpmitool(host){
     printRow(host, `${pad(row[0],23)} | ${pad(val,10,true)} | ${pad(row[1],9)} | ok`);
   });
   if(a.cooling==="liquid"){
-    tickCoolant(s.coolant);
+    tickCoolantIfFree(s);
     const c = s.coolant;
     const lvlStatus = c.level>=90?"ok":c.level>=80?"warn":"crit";
     printRow(host, `${pad("Coolant Supply Temp",23)} | ${pad(c.supplyTemp,10,true)} | ${pad("degrees C",9)} | ok`);
@@ -743,8 +897,17 @@ function cmdNvlink(host,args){
   printRow(host,"usage: nvlink --status | --capabilities");
 }
 
-function cmdMlxfwmanager(host){
-  const a = sessions[host].arch;
+function cmdMlxfwmanager(host, args){
+  const s = sessions[host]; const a = s.arch;
+  if(args && args.includes("--reset")){
+    const hadFault = s.labHcaFault !== null && s.labHcaFault !== undefined;
+    const idx = hadFault ? s.labHcaFault : 0;
+    s.labHcaFault = null;
+    printRow(host, `Resetting adapter mlx5_${idx} ...`);
+    print(host, "nv", `Firmware re-initialized. Link state: Up.`);
+    tryResolveLab(host, "mlxfwmanager --reset");
+    return;
+  }
   printRow(host,"Querying Mellanox devices firmware ...");
   printRow(host,"");
   const n = Math.min(a.hcaCount, 2);
@@ -782,9 +945,18 @@ function cmdMst(host){
 }
 
 function cmdIbdev2netdev(host){
-  const a = sessions[host].arch;
+  const s = sessions[host]; const a = s.arch;
   for(let i=0;i<a.hcaCount;i++){
-    printRow(host, `mlx5_${i} port 1 ==> ibp${i}s0f0np0 (Up)`);
+    const down = s.labHcaFault === i || (i===0 && s.switchPortDown);
+    print(host, down?"red":"", `mlx5_${i} port 1 ==> ibp${i}s0f0np0 (${down?"Down":"Up"})`);
+  }
+  if(s.labHcaFault !== null && s.labHcaFault !== undefined){
+    printRow(host, "");
+    printFix(host, "mlxfwmanager --reset", `mlx5_${s.labHcaFault} is down`);
+  } else if(s.switchPortDown){
+    const port = switchPortForNode(host);
+    printRow(host, "");
+    printFix(host, `(on ${switchHostname}) configure terminal → interface ${port?port.label:"<port>"} → no shutdown`, `administratively disabled on ${switchHostname}`);
   }
 }
 
@@ -809,8 +981,23 @@ function cmdInfo(host){
 
 function cmdNvsm(host, args){
   const s = sessions[host]; const a = s.arch;
+  if(args[0]==="repair" && args[1]==="cooling"){
+    if(a.cooling !== "liquid"){
+      printRow(host,"No liquid cooling subsystem detected on this platform.");
+      return;
+    }
+    const wasFaulted = !!s.labCoolantFault;
+    s.labCoolantFault = false;
+    s.coolant.level = rnd(96,100);
+    s.coolant.flow = rnd(24,34);
+    s.coolant.supplyTemp = rnd(24,28);
+    s.coolant.returnTemp = s.coolant.supplyTemp + rnd(6,10);
+    print(host,"nv","Coolant subsystem repaired. Level restored to "+s.coolant.level+"%. Leak sensor: Clear.");
+    tryResolveLab(host, "nvsm repair cooling");
+    return;
+  }
   if(args[0]!=="show" || args[1]!=="cooling"){
-    printRow(host,"usage: nvsm show cooling");
+    printRow(host,"usage: nvsm show cooling | nvsm repair cooling");
     return;
   }
   if(a.cooling !== "liquid"){
@@ -822,7 +1009,7 @@ function cmdNvsm(host, args){
     printRow(host,"  No liquid cooling subsystem detected on this platform.");
     return;
   }
-  tickCoolant(s.coolant);
+  tickCoolantIfFree(s);
   const c = s.coolant;
   const lvlCls = c.level>=90?"nv":c.level>=80?"amber":"red";
   const lvlWord = c.level>=90?"Normal":c.level>=80?"Low":"Critical";
@@ -836,6 +1023,859 @@ function cmdNvsm(host, args){
   printRow(host,"  Return Temp     "+c.returnTemp+"°C  (ΔT "+(c.returnTemp-c.supplyTemp)+"°C)");
   printRow(host,"  Pump Status     ✓ Running");
   printRow(host,"  Leak Sensor     "+(c.level<80?"⚠ Check":"✓ Clear"));
+  if(c.level<90){
+    printRow(host,"");
+    printFix(host, "nvsm repair cooling");
+  }
+}
+
+function cmdIbstat(host){
+  const s = sessions[host]; const a = s.arch;
+  const caType = a.hcaSpeed.split(" ")[1] || "ConnectX-7";
+  const rateGb = a.hcaSpeed.split("Gb")[0];
+  for(let i=0;i<a.hcaCount;i++){
+    const down = s.labHcaFault === i || (i===0 && s.switchPortDown);
+    printRow(host, `CA '${"mlx5_"+i}'`);
+    printRow(host, `\tCA type: ${caType}`);
+    printRow(host, `\tFirmware version: 28.39.1002`);
+    printRow(host, `\tHardware version: 0`);
+    printRow(host, `\tNode GUID: 0x${hx()}${hx()}${hx()}${hx()}${hx()}${hx()}${hx()}${hx()}`);
+    printRow(host, `\tSystem image GUID: 0x${hx()}${hx()}${hx()}${hx()}${hx()}${hx()}${hx()}${hx()}`);
+    printRow(host, `\tPort 1:`);
+    print(host, down?"red":"nv", `\t\tState: ${down?"Down":"Active"}`);
+    printRow(host, `\t\tPhysical state: ${down?"Polling":"LinkUp"}`);
+    printRow(host, `\t\tRate: ${down?"0":rateGb}`);
+    printRow(host, `\t\tBase lid: ${down?"0":rnd(1,60)}`);
+    printRow(host, `\t\tLMC: 0`);
+    printRow(host, `\t\tSM lid: ${down?"0":"1"}`);
+    printRow(host, `\t\tCapability mask: 0x2659e848`);
+    printRow(host, "");
+  }
+  if(s.labHcaFault !== null && s.labHcaFault !== undefined){
+    printFix(host, "mlxfwmanager --reset", `mlx5_${s.labHcaFault} is down`);
+  } else if(s.switchPortDown){
+    const port = switchPortForNode(host);
+    printFix(host, `(on ${switchHostname}) configure terminal → interface ${port?port.label:"<port>"} → no shutdown`, `administratively disabled on ${switchHostname}`);
+  }
+}
+
+function cmdNumactl(host, args){
+  const a = sessions[host].arch;
+  if(args[0] !== "--hardware"){ printRow(host,"usage: numactl --hardware"); return; }
+  const nodes = 2;
+  const coresPerNode = Math.round(a.cores/nodes);
+  printRow(host, `available: ${nodes} nodes (0-${nodes-1})`);
+  for(let i=0;i<nodes;i++){
+    const start = i*coresPerNode;
+    const cpuList = Array.from({length:coresPerNode},(_,k)=>start+k).join(" ");
+    printRow(host, `node ${i} cpus: ${cpuList}`);
+  }
+  const memPerNodeMB = Math.round(2048*1024/nodes);
+  for(let i=0;i<nodes;i++){
+    printRow(host, `node ${i} size: ${memPerNodeMB} MB`);
+    printRow(host, `node ${i} free: ${Math.round(memPerNodeMB*rndf(0.55,0.85,2))} MB`);
+  }
+  printRow(host, "node distances:");
+  printRow(host, "node    0    1");
+  printRow(host, "  0:   10   21");
+  printRow(host, "  1:   21   10");
+}
+
+function cmdLspci(host){
+  const s = sessions[host]; const a = s.arch;
+  s.gpus.forEach(g=>{
+    const bus = `${pad(g.id+27,2,true)}:00.0`;
+    printRow(host, `${bus} 3D controller: NVIDIA Corporation ${a.gpuModel} (rev a1)`);
+  });
+  for(let i=0;i<a.hcaCount;i++){
+    const bus = `${pad(i+90,2,true)}:00.0`;
+    printRow(host, `${bus} Ethernet controller: Mellanox Technologies MT2910 Family [${a.hcaSpeed.split(" ")[1]||"ConnectX-7"}]`);
+  }
+}
+
+function cmdNvmeList(host, args){
+  if(args[0] !== "list"){ printRow(host,"usage: nvme list"); return; }
+  printRow(host, "Node             SN                   Model                     Namespace  Usage                      FW Rev");
+  printRow(host, "---------------- -------------------- ------------------------- ---------- -------------------------- --------");
+  for(let i=0;i<4;i++){
+    const sn = "S" + rnd(100000000000,999999999999);
+    const used = rndf(1.2,7.1,2)+" TB";
+    printRow(host, `${pad("/dev/nvme"+i+"n1",17)}${pad(sn,21)}${pad("Micron_9400_MAX",26)}${pad("1",11)}${pad(used+" / 7.68 TB",27)}1.0`);
+  }
+}
+
+function cmdSystemctl(host, args){
+  const s = sessions[host];
+  if(args[0]==="restart" && args[1]==="nvidia-fabricmanager"){
+    s.labFabricFault = false;
+    printRow(host, "Restarting nvidia-fabricmanager.service...");
+    print(host, "nv", "Fabric Manager is now active (running). NVSwitch fabric is healthy.");
+    tryResolveLab(host, "systemctl restart nvidia-fabricmanager");
+    return;
+  }
+  if(args[0]==="status" && args[1]==="nvidia-fabricmanager"){
+    if(s.labFabricFault){
+      printRow(host, "● nvidia-fabricmanager.service - NVIDIA fabric manager service");
+      printRow(host, "     Loaded: loaded (/lib/systemd/system/nvidia-fabricmanager.service; enabled)");
+      print(host, "red", "     Active: failed (Result: exit-code) since " + new Date().toDateString());
+      printRow(host, "    Process: " + rnd(1000,9000) + " (code=exited, status=1/FAILURE)");
+      printRow(host, "");
+      print(host, "red", "Fabric Manager is not running. NVSwitch fabric is degraded.");
+      printFix(host, "systemctl restart nvidia-fabricmanager");
+      return;
+    }
+    printRow(host, "● nvidia-fabricmanager.service - NVIDIA fabric manager service");
+    printRow(host, "     Loaded: loaded (/lib/systemd/system/nvidia-fabricmanager.service; enabled)");
+    print(host, "nv", "     Active: active (running) since " + new Date(Date.now()-86400000*rnd(1,30)).toDateString());
+    printRow(host, "   Main PID: " + rnd(1000,9000) + " (nv-fabricmanager)");
+    printRow(host, "      Tasks: " + rnd(8,20));
+    printRow(host, "     Memory: " + rndf(40,120,1) + "M");
+    printRow(host, "");
+    printRow(host, "Fabric Manager started successfully. NVSwitch fabric is healthy.");
+    return;
+  }
+  printRow(host, "usage: systemctl status|restart nvidia-fabricmanager");
+}
+
+function cmdFieldDiag(host){
+  const s = sessions[host]; const a = s.arch;
+  tickAllGpus(s);
+  tickCoolantIfFree(s);
+
+  print(host, "nv bold", "  DGX FIELD DIAGNOSTIC");
+  printRow(host, "  Running full-system validation sweep (GPU, fabric, cooling, network, storage, power)...");
+  printRow(host, "");
+
+  const results = [];
+  const fixes = [];
+
+  printRow(host, "[1/6] GPU Subsystem");
+  s.gpus.forEach(g=>{
+    const pass = g.temp<80 && Math.random()>0.03;
+    print(host, pass?"nv":"red", `   GPU ${g.id}   ECC: Pass   Memory: Pass   Thermal: ${pass?"Pass":"FAIL"} (${g.temp}°C)`);
+    results.push(pass);
+    if(!pass) fixes.push([`nvidia-smi -r -i ${g.id}`, `GPU ${g.id} failed thermal check`]);
+  });
+  printRow(host, "");
+
+  printRow(host, "[2/6] NVLink / Fabric");
+  const nvlinkPass = Math.random()>0.04 && !s.labFabricFault;
+  print(host, nvlinkPass?"nv":"red", `   NVSwitch fabric: ${nvlinkPass?"Pass":"FAIL"}   Link training: Pass   Topology: Pass`);
+  results.push(nvlinkPass);
+  if(!nvlinkPass) fixes.push(["systemctl restart nvidia-fabricmanager", "NVSwitch fabric failed"]);
+  printRow(host, "");
+
+  printRow(host, "[3/6] Cooling Subsystem");
+  if(a.cooling==="liquid"){
+    const c = s.coolant;
+    const coolPass = c.level>=80;
+    print(host, coolPass?"nv":"amber", `   Coolant level: ${c.level}% (${coolPass?"Pass":"Warn"})   Flow rate: Pass   Pump: Pass   Leak sensor: Pass`);
+    results.push(coolPass);
+    if(!coolPass) fixes.push(["nvsm repair cooling", `coolant level at ${c.level}%`]);
+  } else {
+    const avgFan = Math.round(s.gpus.reduce((acc,g)=>acc+g.fan,0)/8);
+    printRow(host, `   Fan array: Pass (avg ${avgFan}%)   Airflow: Pass`);
+    results.push(true);
+  }
+  printRow(host, "");
+
+  printRow(host, "[4/6] Network / InfiniBand");
+  const hcaDown = (s.labHcaFault !== null && s.labHcaFault !== undefined) || s.switchPortDown;
+  const hcaOk = a.hcaCount - (hcaDown?1:0);
+  print(host, hcaDown?"red":"nv", `   ${hcaOk}/${a.hcaCount} HCAs: ${hcaDown?"FAIL":"Pass"}   Port state: ${hcaDown?"1 port down":"Pass"}   Firmware: Pass`);
+  results.push(!hcaDown);
+  if(s.labHcaFault !== null && s.labHcaFault !== undefined) fixes.push(["mlxfwmanager --reset", `mlx5_${s.labHcaFault} is down`]);
+  else if(s.switchPortDown){ const port = switchPortForNode(host); fixes.push([`(on ${switchHostname}) configure terminal → interface ${port?port.label:"<port>"} → no shutdown`, `administratively disabled on ${switchHostname}`]); }
+  printRow(host, "");
+
+  printRow(host, "[5/6] Storage");
+  printRow(host, "   NVMe health: Pass   SMART status: Pass   Filesystem integrity: Pass");
+  results.push(true);
+  printRow(host, "");
+
+  printRow(host, "[6/6] Power Subsystem");
+  const pwrPass = Math.random()>0.03;
+  print(host, pwrPass?"nv":"amber", `   PSU1: Pass   PSU2: Pass   Power budget: ${pwrPass?"Pass":"Warn"}`);
+  results.push(pwrPass);
+  if(!pwrPass) fixes.push([null, "power budget warning — this is a hardware condition; contact field service if it recurs"]);
+  printRow(host, "");
+
+  const allPass = results.every(Boolean);
+  print(host, allPass?"nv bold":"red bold", `  RESULT: ${allPass?"PASS":"ATTENTION REQUIRED"}  —  completed in ${rndf(38,96,1)}s`);
+  if(fixes.length){
+    printRow(host, "");
+    printRow(host, "  Recommended Actions:");
+    const shown = new Set();
+    fixes.forEach(([cmdStr,note])=>{
+      if(cmdStr && shown.has(cmdStr)) return;
+      if(cmdStr) shown.add(cmdStr);
+      if(cmdStr) printFix(host, cmdStr, note);
+      else print(host, "amber bold", "  → "+note);
+    });
+  }
+  logEvent(host, allPass ? "Field diagnostic completed — all subsystems nominal" : "Field diagnostic flagged an issue — review subsystem report", allPass ? "ok" : "warn");
+}
+
+// ---------- lab scenarios (fault injection + guided troubleshooting) ----------
+const LABS = [
+  {
+    id:"thermal", title:"GPU Thermal Throttle", host:"dgx-h200-01", type:"thermal", gpuIndex:3,
+    briefing:"Training throughput on dgx-h200-01 has dropped sharply since this morning. A GPU may be thermal throttling.",
+    steps:[
+      {label:"Check live GPU status", cmd:"nvidia-smi"},
+      {label:"Run a diagnostic sweep", cmd:"dcgmi diag -r 1"},
+    ],
+    resolveCmd:"nvidia-smi -r -i 3",
+    resolveLabel:"Reset the affected GPU",
+  },
+  {
+    id:"coolant", title:"Coolant Pressure Alarm", host:"dgx-b200-01", type:"coolant",
+    briefing:"Facilities reports a coolant pressure alarm on dgx-b200-01's CDU loop.",
+    steps:[
+      {label:"Check the cooling subsystem", cmd:"nvsm show cooling"},
+      {label:"Review BMC sensor readings", cmd:"ipmitool sensor list"},
+    ],
+    resolveCmd:"nvsm repair cooling",
+    resolveLabel:"Repair the cooling subsystem",
+  },
+  {
+    id:"fabric", title:"NVLink Fabric Degraded", host:"dgx-gb200-01", type:"fabric",
+    briefing:"NCCL collective jobs on dgx-gb200-01 are timing out intermittently.",
+    steps:[
+      {label:"Run a GPU diagnostic sweep", cmd:"dcgmi diag -r 1"},
+      {label:"Check the fabric manager service", cmd:"systemctl status nvidia-fabricmanager"},
+    ],
+    resolveCmd:"systemctl restart nvidia-fabricmanager",
+    resolveLabel:"Restart the fabric manager service",
+  },
+  {
+    id:"network", title:"InfiniBand Port Down", host:"dgx-vr200-01", type:"network", hcaIndex:2,
+    briefing:"A storage node reports it lost connectivity to dgx-vr200-01 over the compute fabric.",
+    steps:[
+      {label:"Check InfiniBand port status", cmd:"ibstat"},
+      {label:"Map HCAs to net devices", cmd:"ibdev2netdev"},
+    ],
+    resolveCmd:"mlxfwmanager --reset",
+    resolveLabel:"Reset the affected adapter",
+  },
+];
+
+let activeLab = null;
+
+function clearLabFault(lab){
+  const s = sessions[lab.host];
+  if(!s) return;
+  if(lab.type==="thermal") s.labGpuFault = null;
+  if(lab.type==="coolant") s.labCoolantFault = false;
+  if(lab.type==="fabric") s.labFabricFault = false;
+  if(lab.type==="network") s.labHcaFault = null;
+}
+
+function startLab(id){
+  const def = LABS.find(l=>l.id===id);
+  if(!def) return;
+  if(activeLab && !activeLab.resolved) clearLabFault(activeLab);
+
+  const s = sessions[def.host];
+  activeLab = {
+    id:def.id, title:def.title, host:def.host, type:def.type,
+    gpuIndex:def.gpuIndex, hcaIndex:def.hcaIndex,
+    briefing:def.briefing, resolveCmd:def.resolveCmd, resolveLabel:def.resolveLabel,
+    steps: def.steps.map(st=>({label:st.label, cmd:st.cmd, done:false})),
+    resolved:false, startedAt:Date.now(),
+  };
+
+  if(def.type==="thermal"){
+    s.labGpuFault = def.gpuIndex;
+    s.gpus[def.gpuIndex].temp = 86;
+    s.gpus[def.gpuIndex].util = rnd(4,10);
+  } else if(def.type==="coolant"){
+    s.labCoolantFault = true;
+    s.coolant.level = rnd(70,76);
+  } else if(def.type==="fabric"){
+    s.labFabricFault = true;
+  } else if(def.type==="network"){
+    s.labHcaFault = def.hcaIndex;
+  }
+  logEvent(def.host, "Lab scenario started: "+def.title, "warn");
+  renderLab();
+  renderAlerts();
+
+  const btn = [...tabsEl.querySelectorAll('.tab')].find(b=>b.dataset.h===def.host);
+  if(btn && active!==def.host) btn.click();
+}
+
+function abandonLab(){
+  if(activeLab && !activeLab.resolved) clearLabFault(activeLab);
+  activeLab = null;
+  renderLab();
+  renderAlerts();
+}
+
+function tryResolveLab(host, cmdStr){
+  if(!activeLab || activeLab.resolved) return;
+  if(activeLab.host !== host || cmdStr !== activeLab.resolveCmd) return;
+  activeLab.resolved = true;
+  logEvent(host, "Lab scenario resolved: "+activeLab.title, "ok");
+  renderLab();
+}
+
+function labVisualHTML(lab){
+  const s = sessions[lab.host];
+  let curIcon, curVal, curColor, tgtIcon, tgtVal;
+
+  if(lab.type==="thermal"){
+    const g = s.gpus[lab.gpuIndex];
+    curColor = g.temp>=85 ? "var(--red)" : g.temp>=75 ? "var(--amber)" : "var(--ok)";
+    curIcon = thermoSVG(g.temp, curColor);
+    curVal = g.temp+"&deg;C";
+    tgtIcon = thermoSVG(42, "var(--ok)");
+    tgtVal = "~42&deg;C";
+  } else if(lab.type==="coolant"){
+    const c = s.coolant;
+    curColor = c.level>=90 ? "var(--ok)" : c.level>=80 ? "var(--amber)" : "var(--red)";
+    curIcon = coolantTankSVG(c.level, c.flow, curColor, "cur");
+    curVal = c.level+"%";
+    tgtIcon = coolantTankSVG(98, 28, "var(--ok)", "tgt");
+    tgtVal = "~98%";
+  } else if(lab.type==="fabric"){
+    const ok = !s.labFabricFault;
+    curColor = ok ? "var(--ok)" : "var(--red)";
+    curIcon = fabricSVG(ok, curColor);
+    curVal = ok ? "Active" : "Failed";
+    tgtIcon = fabricSVG(true, "var(--ok)");
+    tgtVal = "Active";
+  } else if(lab.type==="network"){
+    const ok = s.labHcaFault===null || s.labHcaFault===undefined;
+    curColor = ok ? "var(--ok)" : "var(--red)";
+    curIcon = portSVG(ok, curColor);
+    curVal = ok ? "Up" : "Down";
+    tgtIcon = portSVG(true, "var(--ok)");
+    tgtVal = "Up";
+  } else {
+    return "";
+  }
+
+  return `
+    <div class="lab-visual">
+      <div class="lab-visual-col">
+        <div class="lab-visual-label">Current</div>
+        ${curIcon}
+        <div class="lab-visual-value" style="color:${curColor}">${curVal}</div>
+      </div>
+      <div class="lab-visual-arrow">&#8594;</div>
+      <div class="lab-visual-col">
+        <div class="lab-visual-label">Target (Healthy)</div>
+        ${tgtIcon}
+        <div class="lab-visual-value ok">${tgtVal}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderLab(){
+  const box = document.getElementById('labBox');
+  const pill = document.getElementById('labStatusPill');
+  if(!box || !pill) return;
+
+  const pickerHTML = `<select class="lab-select" id="labPicker">${LABS.map(l=>`<option value="${l.id}">${l.title} (${l.host})</option>`).join("")}</select>`;
+
+  if(!activeLab){
+    pill.textContent = "IDLE"; pill.className = "pill xs";
+    box.innerHTML = `
+      <p class="lab-desc">Inject a realistic fault into the fleet and practice diagnosing and resolving it using the terminal.</p>
+      ${pickerHTML}
+      <button class="lab-btn" id="labStartBtn">Start Scenario</button>
+    `;
+    document.getElementById('labStartBtn').addEventListener('click', ()=> startLab(document.getElementById('labPicker').value));
+    return;
+  }
+
+  if(activeLab.resolved){
+    pill.textContent = "RESOLVED"; pill.className = "pill xs lab-done";
+    const secs = Math.max(1, Math.round((Date.now()-activeLab.startedAt)/1000));
+    box.innerHTML = `
+      <div class="lab-host">${activeLab.host}</div>
+      <div class="lab-success">&check; <b>${esc(activeLab.title)}</b> resolved in ~${secs}s. Nice work.</div>
+      ${labVisualHTML(activeLab)}
+      ${pickerHTML}
+      <button class="lab-btn" id="labStartBtn">Start Another Scenario</button>
+    `;
+    document.getElementById('labStartBtn').addEventListener('click', ()=> startLab(document.getElementById('labPicker').value));
+    return;
+  }
+
+  pill.textContent = "ACTIVE"; pill.className = "pill xs lab-active";
+  box.innerHTML = `
+    <div class="lab-host">${activeLab.host}</div>
+    <div class="lab-briefing">${esc(activeLab.briefing)}</div>
+    ${labVisualHTML(activeLab)}
+    <ul class="lab-checklist">
+      ${activeLab.steps.map(st=>`<li class="lab-step ${st.done?'done':''}"><span class="lab-check">${st.done?'&check;':''}</span><span>${esc(st.label)} &mdash; <code>${esc(st.cmd)}</code></span></li>`).join("")}
+    </ul>
+    <div class="lab-resolve">${esc(activeLab.resolveLabel)}:<code>${esc(activeLab.resolveCmd)}</code></div>
+    <button class="lab-btn secondary" id="labAbandonBtn">Abandon Scenario</button>
+  `;
+  document.getElementById('labAbandonBtn').addEventListener('click', abandonLab);
+}
+
+// ---------- Mellanox/NVIDIA switch (Cisco IOS-style CLI) ----------
+let switchHostname = "mlx-sw01";
+const SWITCH_COMMANDS = ["enable","disable","configure terminal","interface","shutdown","no shutdown",
+  "description","hostname","ip domain-name","no ip domain-lookup","enable secret",
+  "show interfaces status","show interfaces counters","show interface","show version",
+  "show system","show running-config","write memory","exit","end","help","history","clear"];
+const switchState = {
+  model: "NVIDIA Quantum-2 QM9700",
+  os: "MLNX-OS (Onyx) 5.9.3104",
+  serial: "MT2412X"+rnd(10000,99999),
+  bootedDaysAgo: rnd(4,190),
+  mode: "user", // "user" | "enable" | "config" | "config-if"
+  configIfPort: null,
+  domainName: "",
+  domainLookup: true,
+  enableSecret: "",
+  awaitingEnablePassword: false,
+  ports: NODES.map((n,i)=>({
+    id:i+1, label:`Gi1/${i+1}`, node:n.host, adminUp:true, desc:"Link to "+n.host,
+    rxGbps:0, txGbps:0, rxBytes:0, txBytes:0, rxPkts:0, txPkts:0, history:[]
+  })),
+  cwd:"~", hist:[], histPos:0, lines:[],
+};
+
+function switchPortForNode(host){
+  return switchState.ports.find(p=>p.node===host);
+}
+function findSwitchPort(label){
+  if(!label) return null;
+  const norm = label.trim().toLowerCase().replace(/^gi/,"");
+  return switchState.ports.find(p=>
+    p.label.toLowerCase()===label.toLowerCase() ||
+    p.label.toLowerCase().replace(/^gi/,"")===norm ||
+    String(p.id)===norm
+  );
+}
+function switchBootBanner(){
+  return [
+    ["nv bold", `  ${switchState.model.toUpperCase()}`],
+    ["dim",""],
+    ["dim", `  MLNX-OS Version: ${switchState.os}      Serial: ${switchState.serial}`],
+    ["dim", `  Ports: ${switchState.ports.length}/64 connected      Uptime: ${switchState.bootedDaysAgo} days`],
+    ["faint","  Last login: " + new Date(Date.now()-86400000*rnd(1,4)).toDateString() + " from 10.66." + rnd(1,254) + "." + rnd(1,254)],
+    ["",""],
+    ["bold","Need help?"],
+    ["","    help              "],
+  ];
+}
+function switchPrint(cls, text){ switchState.lines.push([cls, text===undefined?"":text]); }
+function switchPrintRow(text){ switchPrint("", text); }
+
+function switchPromptPlain(){
+  if(switchState.awaitingEnablePassword) return "Password:";
+  switch(switchState.mode){
+    case "user": return `${switchHostname}>`;
+    case "enable": return `${switchHostname}#`;
+    case "config": return `${switchHostname}(config)#`;
+    case "config-if": return `${switchHostname}(config-if)#`;
+    default: return `${switchHostname}>`;
+  }
+}
+
+function fmtBytes(n){
+  const units = ["B","KB","MB","GB","TB","PB"];
+  let i=0, v=n;
+  while(v>=1024 && i<units.length-1){ v/=1024; i++; }
+  return v.toFixed(i>0?2:0)+" "+units[i];
+}
+
+function tickPortTraffic(p){
+  if(!p.adminUp){
+    p.rxGbps = 0; p.txGbps = 0;
+    p.history.push({rx:0, tx:0});
+    if(p.history.length>30) p.history.shift();
+    return;
+  }
+  const s = sessions[p.node];
+  const avgUtil = s ? Math.round(s.gpus.reduce((a,g)=>a+g.util,0)/8) : rnd(5,30);
+  const maxGbps = parseFloat(s ? s.arch.hcaSpeed : "400") || 400;
+  const target = (avgUtil/100) * maxGbps * 0.85;
+  const jitter = (Math.random()*2 - 1) * maxGbps * 0.04;
+  p.rxGbps = +Math.max(0, target + jitter).toFixed(2);
+  p.txGbps = +Math.max(0, target * (0.75 + Math.random()*0.3)).toFixed(2);
+  const bytesThisTick = (gbps)=> Math.round(gbps*1e9/8*2.2);
+  p.rxBytes += bytesThisTick(p.rxGbps);
+  p.txBytes += bytesThisTick(p.txGbps);
+  p.rxPkts += Math.round(bytesThisTick(p.rxGbps)/1500);
+  p.txPkts += Math.round(bytesThisTick(p.txGbps)/1500);
+  p.history.push({rx:p.rxGbps, tx:p.txGbps});
+  if(p.history.length>30) p.history.shift();
+}
+
+function switchShowInterfacesStatus(){
+  switchPrintRow("Port    Connected Node          Admin      Link      Speed");
+  switchPrintRow("------  ----------------------  ---------  --------  ----------------");
+  switchState.ports.forEach(p=>{
+    const linkUp = p.adminUp;
+    const speed = sessions[p.node] ? sessions[p.node].arch.hcaSpeed : "n/a";
+    switchPrint(linkUp?"nv":"red", `${pad(p.label,8)}${pad(p.node,24)}${pad(p.adminUp?"Up":"Down",11)}${pad(linkUp?"Up":"Down",10)}${speed}`);
+  });
+}
+function switchShowInterfacesCounters(){
+  switchPrintRow("Port    RX Rate      TX Rate      RX Bytes      TX Bytes      RX Pkts      TX Pkts");
+  switchPrintRow("------  -----------  -----------  ------------  ------------  -----------  -----------");
+  switchState.ports.forEach(p=>{
+    switchPrintRow(`${pad(p.label,8)}${pad(p.rxGbps.toFixed(2)+" Gb/s",13)}${pad(p.txGbps.toFixed(2)+" Gb/s",13)}${pad(fmtBytes(p.rxBytes),14)}${pad(fmtBytes(p.txBytes),14)}${pad(String(p.rxPkts),13)}${pad(String(p.txPkts),13)}`);
+  });
+}
+function switchShowInterfaceDetail(label){
+  const p = findSwitchPort(label);
+  if(!p){ switchPrintRow("% Invalid port: "+label); return; }
+  const speed = sessions[p.node] ? sessions[p.node].arch.hcaSpeed : "n/a";
+  switchPrintRow(`Interface ${p.label}`);
+  switchPrintRow(`  Description:    ${p.desc}`);
+  switchPrintRow(`  Connected to:   ${p.node}`);
+  switchPrint(p.adminUp?"nv":"red", `  Admin state:    ${p.adminUp?"Up":"Down"}`);
+  switchPrint(p.adminUp?"nv":"red", `  Link state:     ${p.adminUp?"Up":"Down"}`);
+  switchPrintRow(`  Speed:          ${speed}`);
+  switchPrintRow(`  RX Rate:        ${p.rxGbps.toFixed(2)} Gb/s`);
+  switchPrintRow(`  TX Rate:        ${p.txGbps.toFixed(2)} Gb/s`);
+  switchPrintRow(`  RX Bytes:       ${fmtBytes(p.rxBytes)}`);
+  switchPrintRow(`  TX Bytes:       ${fmtBytes(p.txBytes)}`);
+  switchPrintRow(`  CRC errors:     0`);
+  switchPrintRow(`  Symbol errors:  0`);
+}
+function switchShowVersion(){
+  switchPrintRow("Product name:      "+switchState.model);
+  switchPrintRow("MLNX-OS Version:   "+switchState.os);
+  switchPrintRow("Build ID:          #1-"+rnd(1000,9999));
+  switchPrintRow("Uptime:            "+switchState.bootedDaysAgo+" days");
+}
+function switchShowSystem(){
+  switchPrintRow("System Description: "+switchState.model);
+  switchPrintRow("System Serial Num:   "+switchState.serial);
+  switchPrintRow("Software Version:    "+switchState.os);
+  switchPrintRow("Uptime:              "+switchState.bootedDaysAgo+" days");
+  switchPrintRow("Ambient Temp:        "+rnd(24,34)+"°C");
+  switchPrintRow("Fan Status:          OK (4/4)");
+  switchPrintRow("Power Supplies:      OK (2/2)");
+}
+function switchShowRunningConfig(){
+  switchPrintRow("Building configuration...");
+  switchPrintRow("");
+  switchPrintRow("Current configuration:");
+  switchPrintRow("!");
+  switchPrintRow("hostname "+switchHostname);
+  if(switchState.enableSecret) switchPrintRow("enable secret "+"*".repeat(8));
+  if(!switchState.domainLookup) switchPrintRow("no ip domain-lookup");
+  if(switchState.domainName) switchPrintRow("ip domain-name "+switchState.domainName);
+  switchState.ports.forEach(p=>{
+    switchPrintRow("!");
+    switchPrintRow("interface "+p.label);
+    switchPrintRow(" description "+p.desc);
+    if(!p.adminUp) switchPrint("amber", " shutdown");
+  });
+  switchPrintRow("!");
+  switchPrintRow("end");
+}
+function switchHelp(){
+  const rows = {
+    user: [
+      ["enable","enter privileged EXEC mode"],
+      ["show ...","view-only commands (status, counters, version, system)"],
+    ],
+    enable: [
+      ["configure terminal","enter global configuration mode"],
+      ["show interfaces status|counters","port summary / traffic counters"],
+      ["show interface <port>","detailed status for one port, e.g. Gi1/3"],
+      ["show running-config","current configuration"],
+      ["show version / show system","OS version / chassis info"],
+      ["write memory","save the running configuration"],
+      ["disable","return to user EXEC mode"],
+    ],
+    config: [
+      ["interface <port>","enter interface configuration mode, e.g. Gi1/3"],
+      ["hostname <name>","rename this switch"],
+      ["enable secret <password>","require a password to enter privileged EXEC mode"],
+      ["ip domain-name <name>","set the DNS domain name"],
+      ["no ip domain-lookup","disable DNS lookups"],
+      ["exit","return to privileged EXEC mode"],
+      ["end","return to privileged EXEC mode"],
+    ],
+    "config-if": [
+      ["shutdown","administratively disable this port"],
+      ["no shutdown","re-enable this port"],
+      ["description <text>","set the port description"],
+      ["exit","return to global configuration mode"],
+      ["end","return to privileged EXEC mode"],
+    ],
+  };
+  switchPrintRow("Available commands ("+switchPromptPlain()+"):");
+  rows[switchState.mode].forEach(([c,d])=> switchState.lines.push(["help-row", {c,d}]));
+  switchPrintRow("");
+  switchPrintRow("  history / clear       command history / clear screen");
+}
+function switchInvalid(){
+  switchPrint("red", "% Invalid input detected at '^' marker.");
+}
+function switchIncomplete(){
+  switchPrint("red", "% Incomplete command.");
+}
+// Cisco-style unambiguous prefix matching: a typed token matches a full
+// keyword if it's a non-empty prefix of it (e.g. "en" matches "enable").
+function isCmd(token, full){
+  return !!token && full.startsWith(token.toLowerCase());
+}
+
+function runSwitchCommand(raw){
+  const trimmed = raw.trim();
+  const promptAtEntry = switchPromptPlain();
+
+  if(switchState.awaitingEnablePassword){
+    switchState.awaitingEnablePassword = false;
+    switchPrint("prompt-echo", {echo:true, text:"*".repeat(Math.max(4,trimmed.length)), prompt:promptAtEntry});
+    if(trimmed !== "" && trimmed === switchState.enableSecret){
+      switchState.mode = "enable";
+    } else {
+      switchPrint("red", "% Access denied");
+    }
+    return;
+  }
+
+  switchState.hist.push(raw); switchState.histPos = switchState.hist.length;
+  switchPrint("prompt-echo", {echo:true, text:raw, prompt:promptAtEntry});
+  if(trimmed === "") return;
+  const parts = trimmed.split(/\s+/);
+  const cmd = parts[0];
+  const args = parts.slice(1);
+  const mode = switchState.mode;
+
+  // commands valid everywhere
+  if(isCmd(cmd,"history")){ switchState.hist.forEach((h,i)=> switchPrintRow(`  ${pad(i+1,4,true)}  ${h}`)); return; }
+  if(isCmd(cmd,"clear")){ switchState.lines = []; renderSwitchTerm(); return; }
+  if(cmd==="?" || isCmd(cmd,"help")){ switchHelp(); return; }
+
+  if(mode==="user"){
+    if(isCmd(cmd,"enable")){
+      if(switchState.enableSecret){ switchState.awaitingEnablePassword = true; }
+      else { switchState.mode = "enable"; }
+      return;
+    }
+    if(isCmd(cmd,"exit")){ switchPrint("amber","logout disabled in simulated session — this console isn't attached to a real shell."); return; }
+    if(isCmd(cmd,"show")){
+      if(!args[0]) return switchIncomplete();
+      if(isCmd(args[0],"interfaces")){
+        if(isCmd(args[1],"status")) return switchShowInterfacesStatus();
+        if(isCmd(args[1],"counters")) return switchShowInterfacesCounters();
+        if(args[1]) return switchShowInterfaceDetail(args[1]);
+        return switchIncomplete();
+      }
+      if(isCmd(args[0],"version")) return switchShowVersion();
+      if(isCmd(args[0],"system")) return switchShowSystem();
+      return switchInvalid();
+    }
+    return switchInvalid();
+  }
+
+  if(mode==="enable"){
+    if(isCmd(cmd,"disable")){ switchState.mode = "user"; return; }
+    if(isCmd(cmd,"exit")){ switchPrint("amber","logout disabled in simulated session — this console isn't attached to a real shell."); return; }
+    if(isCmd(cmd,"configure")){
+      if(!args[0]) return switchIncomplete();
+      if(!isCmd(args[0],"terminal")) return switchInvalid();
+      switchState.mode = "config";
+      switchPrintRow("Enter configuration commands, one per line.  End with CNTL/Z (or type 'end').");
+      return;
+    }
+    if(isCmd(cmd,"show")){
+      if(!args[0]) return switchIncomplete();
+      if(isCmd(args[0],"interfaces")){
+        if(isCmd(args[1],"status")) return switchShowInterfacesStatus();
+        if(isCmd(args[1],"counters")) return switchShowInterfacesCounters();
+        if(args[1]) return switchShowInterfaceDetail(args[1]);
+        return switchIncomplete();
+      }
+      if(isCmd(args[0],"version")) return switchShowVersion();
+      if(isCmd(args[0],"system")) return switchShowSystem();
+      if(isCmd(args[0],"running-config")) return switchShowRunningConfig();
+      return switchInvalid();
+    }
+    if(isCmd(cmd,"write")){
+      if(!isCmd(args[0],"memory")) return switchIncomplete();
+      switchPrintRow("Building configuration..."); switchPrint("nv","[OK]"); return;
+    }
+    if(isCmd(cmd,"copy")){
+      if(isCmd(args[0],"running-config") && isCmd(args[1],"startup-config")){ switchPrintRow("Building configuration..."); switchPrint("nv","[OK]"); return; }
+      return switchIncomplete();
+    }
+    return switchInvalid();
+  }
+
+  if(mode==="config"){
+    if(isCmd(cmd,"exit") || isCmd(cmd,"end")){ switchState.mode = "enable"; switchState.configIfPort = null; return; }
+    if(isCmd(cmd,"interface")){
+      if(!args[0]) return switchIncomplete();
+      const p = findSwitchPort(args[0]);
+      if(!p){ switchPrintRow("% Invalid interface: "+args[0]); return; }
+      switchState.mode = "config-if";
+      switchState.configIfPort = p;
+      return;
+    }
+    if(isCmd(cmd,"hostname")){
+      if(!args[0]) return switchIncomplete();
+      const old = switchHostname;
+      switchHostname = args[0];
+      switchPrintRow(`% Hostname changed from "${old}" to "${switchHostname}"`);
+      renderTabs();
+      return;
+    }
+    if(isCmd(cmd,"enable")){
+      if((isCmd(args[0],"secret") || isCmd(args[0],"password")) && args[1]){
+        switchState.enableSecret = args.slice(1).join(" ");
+        switchPrintRow("Enable password set. Future 'enable' attempts will require it.");
+        return;
+      }
+      return switchIncomplete();
+    }
+    if(isCmd(cmd,"no")){
+      if(isCmd(args[0],"ip") && isCmd(args[1],"domain-lookup")){ switchState.domainLookup = false; return; }
+      return switchIncomplete();
+    }
+    if(isCmd(cmd,"ip")){
+      if(isCmd(args[0],"domain-name") && args[1]){ switchState.domainName = args[1]; return; }
+      if(isCmd(args[0],"domain-lookup")){ switchState.domainLookup = true; return; }
+      return switchIncomplete();
+    }
+    return switchInvalid();
+  }
+
+  if(mode==="config-if"){
+    const p = switchState.configIfPort;
+    if(isCmd(cmd,"exit")){ switchState.mode = "config"; switchState.configIfPort = null; return; }
+    if(isCmd(cmd,"end")){ switchState.mode = "enable"; switchState.configIfPort = null; return; }
+    if(isCmd(cmd,"shutdown")){
+      p.adminUp = false;
+      if(sessions[p.node]) sessions[p.node].switchPortDown = true;
+      switchPrint("amber", `Interface ${p.label} administratively disabled.`);
+      logEvent(p.node, `Switch port ${p.label} shut down (admin)`, "warn");
+      return;
+    }
+    if(isCmd(cmd,"no")){
+      if(isCmd(args[0],"shutdown")){
+        p.adminUp = true;
+        if(sessions[p.node]) sessions[p.node].switchPortDown = false;
+        switchPrint("nv", `Interface ${p.label} enabled.`);
+        logEvent(p.node, `Switch port ${p.label} re-enabled`, "ok");
+        return;
+      }
+      return switchIncomplete();
+    }
+    if(isCmd(cmd,"description")){
+      p.desc = args.join(" ") || p.desc;
+      return;
+    }
+    if(isCmd(cmd,"speed")){
+      switchPrintRow(`Speed set to ${args[0]||"auto"} (cosmetic — link rate is fixed by the connected ConnectX adapter).`);
+      return;
+    }
+    return switchInvalid();
+  }
+}
+
+function renderSwitchTerm(){
+  const lbl1 = document.getElementById('switchTermHostLabel');
+  const lbl2 = document.getElementById('switchTermHostLabel2');
+  if(lbl1) lbl1.textContent = switchHostname;
+  if(lbl2) lbl2.textContent = switchHostname;
+  let html = "";
+  switchState.lines.forEach(([cls,text])=>{
+    if(text && typeof text==="object" && text.echo){
+      html += `<div class="row"><span class="prompt">${esc(text.prompt||switchPromptPlain())} </span><span>${esc(text.text)}</span></div>`;
+    } else if(text && typeof text==="object" && text.c!==undefined){
+      html += `<div class="line">  ${esc(text.c)}<span class="nv"> ${' '.repeat(Math.max(1,26-text.c.length))}${esc(text.d)}</span></div>`;
+    } else {
+      html += `<div class="line ${cls||''}">${esc(text)}</div>`;
+    }
+  });
+  const inputType = switchState.awaitingEnablePassword ? "password" : "text";
+  html += `<form class="row" id="switchLiveForm"><span class="prompt">${esc(switchPromptPlain())} </span><div class="inputWrap"><input id="switchLiveInput" type="${inputType}" autocomplete="off" spellcheck="false" /></div></form>`;
+  const el = document.getElementById('switchTerm');
+  if(!el) return;
+  el.innerHTML = html;
+  el.scrollTop = el.scrollHeight;
+  const inp = document.getElementById('switchLiveInput');
+  if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+}
+
+function bindSwitchInput(){
+  const el = document.getElementById('switchTerm');
+  if(!el) return;
+  el.addEventListener('click', ()=>{ const i=document.getElementById('switchLiveInput'); if(i) i.focus(); });
+  el.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const inp = document.getElementById('switchLiveInput');
+    if(!inp) return;
+    runSwitchCommand(inp.value);
+    renderSwitchTerm();
+    renderSwitchPorts();
+    renderSwitchInfo();
+    renderSwitchTraffic();
+    renderEventLog();
+    renderAlerts();
+  });
+  el.addEventListener('keydown', (e)=>{
+    const inp = e.target;
+    if(inp.id !== 'switchLiveInput') return;
+    if(e.key==='ArrowUp'){
+      e.preventDefault();
+      if(switchState.histPos>0){ switchState.histPos--; inp.value = switchState.hist[switchState.histPos]||""; }
+    } else if(e.key==='ArrowDown'){
+      e.preventDefault();
+      if(switchState.histPos<switchState.hist.length){ switchState.histPos++; inp.value = switchState.hist[switchState.histPos]||""; }
+    } else if(e.key==='Tab'){
+      e.preventDefault();
+      const partial = inp.value.trim();
+      if(partial){
+        const m = SWITCH_COMMANDS.find(c=>c.startsWith(partial));
+        if(m) inp.value = m+" ";
+      }
+    }
+  });
+}
+
+function renderSwitchPorts(){
+  const box = document.getElementById('switchPortsBox');
+  if(!box) return;
+  box.innerHTML = switchState.ports.map(p=>{
+    const up = p.adminUp;
+    return `<div class="rowline"><span>${p.label} &rarr; ${p.node}</span><span class="pill xs"${up?'':' style="color:var(--red);background:rgba(248,81,73,.15);border-color:rgba(248,81,73,.35)"'}>${up?'&check; Up':'&#10005; Down'}</span></div>`;
+  }).join("");
+}
+
+function renderSwitchTraffic(){
+  const box = document.getElementById('switchTrafficBox');
+  if(!box) return;
+  box.innerHTML = switchState.ports.map(p=>{
+    const rxHist = p.history.length ? p.history.map(h=>h.rx) : [0,0];
+    const color = p.adminUp ? "var(--nv)" : "var(--text-faint)";
+    const label = p.adminUp ? `${p.label} &middot; ${p.rxGbps.toFixed(1)}G rx / ${p.txGbps.toFixed(1)}G tx` : `${p.label} &middot; down`;
+    return `<div class="sparkline-row">
+      <span class="sparkline-label">${label}</span>
+      ${sparklineSVG(rxHist, color)}
+    </div>`;
+  }).join("");
+}
+
+function renderSwitchInfo(){
+  const el = document.getElementById('switchInfoBox');
+  if(!el) return;
+  const upCount = switchState.ports.filter(p=>p.adminUp).length;
+  el.innerHTML = `<div class="kv">
+    <div class="r"><span>Model</span><span>${switchState.model}</span></div>
+    <div class="r"><span>OS Version</span><span>${switchState.os}</span></div>
+    <div class="r"><span>Serial</span><span>${switchState.serial}</span></div>
+    <div class="r"><span>Ports Up</span><span>${upCount}/${switchState.ports.length}</span></div>
+    <div class="r"><span>Uptime</span><span>${switchState.bootedDaysAgo} days</span></div>
+  </div>`;
 }
 
 // ---------- command dispatcher ----------
@@ -846,6 +1886,11 @@ function runCommand(host, raw){
   print(host,"prompt-echo", {echo:true, cwd:s.cwd, host, text:raw});
 
   if(trimmed === ""){ return; }
+
+  if(activeLab && !activeLab.resolved && activeLab.host===host){
+    activeLab.steps.forEach(st=>{ if(!st.done && trimmed.startsWith(st.cmd)) st.done = true; });
+  }
+
   const parts = trimmed.split(/\s+/);
   const cmd = parts[0];
   const args = parts.slice(1);
@@ -855,14 +1900,22 @@ function runCommand(host, raw){
       printRow(host,"Available commands:");
       [
         ["nvidia-smi [-L|topo -m]","GPU status, list, or NVLink topology"],
+        ["nvidia-smi -r -i <n>","reset GPU n"],
         ["dcgmi diag -r 1","run a GPU diagnostic sweep"],
         ["dcgmi discovery -l","list managed GPUs"],
         ["ipmitool sensor list","BMC sensor readings"],
         ["nvlink --status","per-link NVLink throughput"],
-        ["mlxfwmanager -q","query ConnectX NIC firmware"],
+        ["mlxfwmanager -q | --reset","query firmware, or reset a faulted adapter"],
         ["mst status -v","Mellanox software tools device status"],
         ["ibdev2netdev","map InfiniBand HCAs to net devices"],
-        ["nvsm show cooling","liquid/air cooling subsystem status"],
+        ["nvsm show|repair cooling","cooling subsystem status, or repair it"],
+        ["nvidia-smi dmon","live-style per-GPU monitor (pwr/temp/sm/mem/enc/dec)"],
+        ["ibstat","per-HCA InfiniBand port state, rate, and GUIDs"],
+        ["numactl --hardware","NUMA node CPU/memory topology"],
+        ["lspci","PCI bus listing of GPUs and NICs"],
+        ["nvme list","NVMe drive inventory and usage"],
+        ["systemctl status|restart nvidia-fabricmanager","fabric manager service status / restart"],
+        ["fielddiag","full field-diagnostic sweep (GPU/fabric/cooling/network/storage/power)"],
         ["top","live process / load snapshot"],
         ["df -h / free -h / lscpu","filesystem, memory, CPU info"],
         ["nvcc --version","CUDA compiler version"],
@@ -876,10 +1929,16 @@ function runCommand(host, raw){
     case "dcgmi": cmdDcgmi(host,args); return;
     case "ipmitool": cmdIpmitool(host); return;
     case "nvlink": cmdNvlink(host,args); return;
-    case "mlxfwmanager": cmdMlxfwmanager(host); return;
+    case "mlxfwmanager": cmdMlxfwmanager(host,args); return;
     case "mst": cmdMst(host); return;
     case "ibdev2netdev": cmdIbdev2netdev(host); return;
     case "nvsm": cmdNvsm(host,args); return;
+    case "ibstat": cmdIbstat(host); return;
+    case "numactl": cmdNumactl(host,args); return;
+    case "lspci": cmdLspci(host); return;
+    case "nvme": cmdNvmeList(host,args); return;
+    case "systemctl": cmdSystemctl(host,args); return;
+    case "fielddiag": cmdFieldDiag(host); return;
     case "top": cmdTop(host); return;
     case "df": cmdDf(host); return;
     case "free": cmdFree(host); return;
@@ -930,10 +1989,11 @@ function fanSVG(pct, color){
   </svg>`;
 }
 
-function coolantTankSVG(pct, flow, color){
+function coolantTankSVG(pct, flow, color, idSuffix){
   const top = 16, bottom = 56, h = bottom - top;
   const fillY = bottom - (Math.max(0,Math.min(100,pct))/100)*h;
   const period = 14, amp = 2.2;
+  const clipId = "tankClip"+(idSuffix||"");
   let wave = `M-${period},${fillY.toFixed(1)}`;
   for(let x=-period; x<=54; x+=period){
     wave += ` Q${(x+period*0.25).toFixed(1)},${(fillY-amp).toFixed(1)} ${(x+period*0.5).toFixed(1)},${fillY.toFixed(1)}`;
@@ -944,14 +2004,49 @@ function coolantTankSVG(pct, flow, color){
   return `<svg viewBox="0 0 40 72" width="40" height="72" class="coolant-icon">
     <rect x="17" y="2" width="6" height="8" fill="none" stroke="var(--nv)" stroke-width="1.6"/>
     <path d="M14,10 L26,10 L20,16 Z" fill="var(--nv)"/>
-    <defs><clipPath id="tankClip"><rect x="6" y="${top}" width="28" height="${h}" rx="7"/></clipPath></defs>
+    <defs><clipPath id="${clipId}"><rect x="6" y="${top}" width="28" height="${h}" rx="7"/></clipPath></defs>
     <rect x="6" y="${top}" width="28" height="${h}" rx="7" fill="none" stroke="var(--border)" stroke-width="2"/>
-    <g clip-path="url(#tankClip)">
+    <g clip-path="url(#${clipId})">
       <rect x="6" y="${fillY}" width="28" height="${bottom-fillY+4}" fill="${color}" opacity=".5"/>
       <path class="water-wave" d="${wave}" fill="${color}" opacity=".85" style="animation-duration:${dur}s"/>
     </g>
     <path d="M14,56 L26,56 L20,62 Z" fill="var(--text-faint)"/>
     <rect x="17" y="62" width="6" height="8" fill="none" stroke="var(--text-faint)" stroke-width="1.6"/>
+  </svg>`;
+}
+
+function thermoSVG(temp, color){
+  const minT=25, maxT=90, stemTop=8, stemBottom=48, stemH=stemBottom-stemTop;
+  const pct = Math.max(0,Math.min(1,(temp-minT)/(maxT-minT)));
+  const fillY = stemBottom - pct*stemH;
+  return `<svg viewBox="0 0 30 68" width="30" height="68">
+    <rect x="10" y="${stemTop}" width="10" height="${stemH}" rx="5" fill="none" stroke="var(--border)" stroke-width="2"/>
+    <circle cx="15" cy="56" r="9" fill="none" stroke="var(--border)" stroke-width="2"/>
+    <rect x="10" y="${fillY}" width="10" height="${stemBottom-fillY}" fill="${color}"/>
+    <circle cx="15" cy="56" r="7" fill="${color}"/>
+  </svg>`;
+}
+
+function fabricSVG(ok, color){
+  const dots = [[32,32,10,10],[32,32,54,10],[32,32,10,54],[32,32,54,54]];
+  const dash = ok ? "" : ` stroke-dasharray="3,3"`;
+  return `<svg viewBox="0 0 64 64" width="64" height="64">
+    ${dots.map(([x1,y1,x2,y2])=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2"${dash}/><circle cx="${x2}" cy="${y2}" r="4" fill="${color}"/>`).join("")}
+    <polygon points="32,16 44,24 44,40 32,48 20,40 20,24" fill="var(--panel-a)" stroke="${color}" stroke-width="2"/>
+    <text x="32" y="36" text-anchor="middle" font-size="10" font-weight="700" fill="${color}" font-family="inherit">FM</text>
+  </svg>`;
+}
+
+function portSVG(ok, color){
+  const mark = ok
+    ? `<path d="M55,24 L57,26.5 L61,20.5" stroke="${color}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<path d="M55.5,19.5 L61.5,27.5 M61.5,19.5 L55.5,27.5" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 68 48" width="68" height="48">
+    <rect x="4" y="13" width="30" height="22" rx="3" fill="none" stroke="var(--border)" stroke-width="2"/>
+    <rect x="34" y="20" width="12" height="8" fill="${color}"/>
+    <line x1="46" y1="24" x2="56" y2="24" stroke="${color}" stroke-width="3" stroke-dasharray="${ok?"0":"4,3"}"/>
+    <circle cx="58" cy="24" r="8" fill="none" stroke="${color}" stroke-width="2"/>
+    ${mark}
   </svg>`;
 }
 
@@ -995,6 +2090,48 @@ function renderEventLog(){
   }).join("");
 }
 
+// ---------- active alerts (current fleet-wide state, not history) ----------
+function computeAlerts(){
+  const alerts = [];
+  NODES.forEach(n=>{
+    const s = sessions[n.host];
+    const maxTemp = Math.max(...s.gpus.map(g=>g.temp));
+    const tz = tempZone(maxTemp);
+    if(tz !== "ok") alerts.push({host:n.host, label:"GPU Temperature", detail:maxTemp+"°C", level:tz});
+    if(s.coolant){
+      const lz = levelZone(s.coolant.level);
+      if(lz !== "ok") alerts.push({host:n.host, label:"Coolant Level", detail:s.coolant.level+"%", level:lz});
+    }
+  });
+  alerts.sort((a,b)=> (a.level==="crit"?0:1) - (b.level==="crit"?0:1));
+  return alerts;
+}
+
+function renderAlerts(){
+  const box = document.getElementById('alertsBox');
+  const pill = document.getElementById('alertsCountPill');
+  if(!box || !pill) return;
+  const alerts = computeAlerts();
+  if(!alerts.length){
+    pill.textContent = "CLEAR";
+    pill.className = "pill xs";
+    box.innerHTML = `<div class="alertclear">&check; No active alerts — fleet is nominal</div>`;
+    return;
+  }
+  const hasCrit = alerts.some(a=>a.level==="crit");
+  pill.textContent = alerts.length + (alerts.length===1 ? " ACTIVE" : " ACTIVE");
+  pill.className = "pill xs " + (hasCrit ? "alert-crit" : "alert-warn");
+  box.innerHTML = alerts.map(a=>`
+    <div class="alertrow ${a.level}">
+      <span class="alertdot"></span>
+      <div class="alertbody">
+        <div class="alerttitle">${a.label} &mdash; ${a.detail}</div>
+        <div class="alerthost">${a.host}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
 function renderTerm(){
   const s = sessions[active];
   let html = "";
@@ -1028,6 +2165,9 @@ function bindInput(){
     renderTerm();
     renderStatusCard();
     renderCooling();
+    renderEventLog();
+    renderAlerts();
+    renderLab();
   });
   termEl.addEventListener('keydown', (e)=>{
     const inp = e.target;
@@ -1051,11 +2191,39 @@ function bindInput(){
 }
 
 // ---------- tabs ----------
+let activeView = "dashboard"; // "dashboard" | "switch" | "about"
+
+function showView(){
+  document.querySelector("main.grid").hidden = activeView!=="dashboard";
+  document.getElementById("switchView").hidden = activeView!=="switch";
+  document.getElementById("aboutView").hidden = activeView!=="about";
+}
+
 function renderTabs(){
-  tabsEl.innerHTML = NODES.map(n=>`<button class="tab ${n.host===active?'active':''}" data-h="${n.host}">${n.host} <span class="archtag">${ARCHES[n.archKey].tag}</span></button>`).join("");
-  [...tabsEl.querySelectorAll('.tab')].forEach(btn=>{
-    btn.addEventListener('click', ()=>{ active = btn.dataset.h; renderTabs(); renderTerm(); renderStatusCard(); renderCooling(); renderNodeDetails(); });
+  const nodeTabsHTML = NODES.map(n=>`<button class="tab ${activeView==="dashboard"&&n.host===active?'active':''}" data-h="${n.host}">${n.host} <span class="archtag">${ARCHES[n.archKey].tag}</span></button>`).join("");
+  const switchTabHTML = `<button class="tab ${activeView==="switch"?'active':''}" data-view="switch">${switchHostname} <span class="archtag">SW</span></button>`;
+  const aboutTabHTML = `<button class="tab" data-view="about" style="margin-left:auto">About</button>`;
+  tabsEl.innerHTML = nodeTabsHTML + switchTabHTML + aboutTabHTML;
+  if(activeView==="about"){
+    const aboutBtn = tabsEl.querySelector('[data-view="about"]');
+    if(aboutBtn) aboutBtn.classList.add("active");
+  }
+  [...tabsEl.querySelectorAll('.tab[data-h]')].forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      activeView = "dashboard";
+      active = btn.dataset.h;
+      renderTabs(); showView();
+      renderTerm(); renderStatusCard(); renderCooling(); renderNodeDetails();
+    });
   });
+  const switchBtn = tabsEl.querySelector('[data-view="switch"]');
+  if(switchBtn) switchBtn.addEventListener('click', ()=>{
+    activeView = "switch";
+    renderTabs(); showView();
+    renderSwitchTerm(); renderSwitchPorts(); renderSwitchInfo(); renderSwitchTraffic();
+  });
+  const aboutBtn = tabsEl.querySelector('[data-view="about"]');
+  if(aboutBtn) aboutBtn.addEventListener('click', ()=>{ activeView = "about"; renderTabs(); showView(); });
 }
 
 // ---------- sidebar: gpu grid ----------
@@ -1138,8 +2306,8 @@ function renderNodeDetails(){
     ["CUDA Version", a.cuda],
     ["OS Version", a.os],
     ["Slurm State","✓ idle"],
-    ["InfiniBand HCAs", "✓ "+a.hcaCount+" Active"],
-    ["NVLink Health","✓ 8/8 GPUs OK"],
+    ["InfiniBand HCAs", (s.labHcaFault!==null || s.switchPortDown) ? "⚠ "+(a.hcaCount-1)+"/"+a.hcaCount+" Active" : "✓ "+a.hcaCount+" Active"],
+    ["NVLink Health", s.labFabricFault ? "⚠ Fabric Manager Down" : "✓ 8/8 GPUs OK"],
   ];
   document.getElementById('nodeDetails').innerHTML = rows.map(([l,r])=>
     `<div class="r"><span>${l}</span><span>${r}</span></div>`
@@ -1150,8 +2318,8 @@ function renderNodeDetails(){
 setInterval(()=>{
   NODES.forEach(n=>{
     const s = sessions[n.host];
-    s.gpus.forEach(g=>tickGpu(g,s.arch));
-    if(s.coolant) tickCoolant(s.coolant);
+    tickAllGpus(s);
+    tickCoolantIfFree(s);
 
     const avgUtil = Math.round(s.gpus.reduce((acc,g)=>acc+g.util,0)/8);
     const maxTemp = Math.max(...s.gpus.map(g=>g.temp));
@@ -1179,9 +2347,13 @@ setInterval(()=>{
       logEvent(n.host, pick(flavorEvents), "ok");
     }
   });
+  switchState.ports.forEach(p=>tickPortTraffic(p));
   renderStatusCard();
   renderCooling();
   renderEventLog();
+  renderAlerts();
+  renderSwitchPorts();
+  renderSwitchTraffic();
 }, 2200);
 
 document.getElementById('resetBtn').addEventListener('click', ()=>{
@@ -1193,13 +2365,22 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 // ---------- boot ----------
 function boot(){
   NODES.forEach(n=> sessions[n.host].lines = bootBanner(n.host));
+  switchState.lines = switchBootBanner();
   renderTabs();
+  showView();
   renderTerm();
   renderStatusCard();
   renderCooling();
   renderNodeDetails();
   renderEventLog();
+  renderAlerts();
+  renderLab();
+  renderSwitchTerm();
+  renderSwitchPorts();
+  renderSwitchInfo();
+  renderSwitchTraffic();
   bindInput();
+  bindSwitchInput();
 }
 boot();
 })();
